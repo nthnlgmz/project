@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.fundys.ph/</loc>
+    <lastmod>2026-10-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image><image:loc>https://www.fundys.ph/images/jars-tray.jpg</image:loc><image:title>Fundy's gourmet cheese spread jars</image:title></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/quezo-de-bola.jpg</image:loc><image:title>Fundy's Quezo de Bola cheese spread</image:title></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/quezo-de-bola-pimiento.jpg</image:loc><image:title>Fundy's Quezo de Bola Pimiento cheese spread</image:title></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/truffle-de-sola.jpg</image:loc><image:title>Fundy's Truffle de Sola cheese spread</image:title></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/basil-pesto.jpg</image:loc><image:title>Fundy's Basil Pesto cheese spread</image:title></image:image>
+  </url>
+</urlset>

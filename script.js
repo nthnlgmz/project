@@ -72,19 +72,3 @@
   }
 })();
 
-// Honest review video: load the Facebook player only when the visitor clicks play
-(function () {
-  var box = document.querySelector('[data-video-embed]');
-  if (!box) return;
-  var btn = box.querySelector('[data-play]');
-  btn.addEventListener('click', function () {
-    var iframe = document.createElement('iframe');
-    iframe.src = 'https://www.facebook.com/plugins/video.php?href=' +
-      encodeURIComponent(box.getAttribute('data-src')) + '&show_text=false&autoplay=true';
-    iframe.title = "Honest review of Fundy's gourmet cheese spread";
-    iframe.allow = 'autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share';
-    iframe.allowFullscreen = true;
-    iframe.setAttribute('scrolling', 'no');
-    box.replaceChild(iframe, btn);
-  });
-})();

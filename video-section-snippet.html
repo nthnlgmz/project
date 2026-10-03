@@ -1,0 +1,42 @@
+<!--
+  HONEST REVIEW VIDEO: paste-ready snippets. Not live yet.
+
+  STEP 1. Upload the files:
+    videos/honest-review.mp4      (the video)
+    images/video-poster.jpg       (thumbnail, 1280x720 or similar)
+  STEP 2. In index.html paste PART A (section) right after the "Ways to Enjoy" </section>,
+          and optionally add <li><a href="#review">Review</a></li> to the nav.
+  STEP 3. Paste PART B (JSON-LD) in <head>, right after the existing JSON-LD script.
+          Fill in name/description/uploadDate/duration. Replace the domain.
+-->
+
+<!-- PART A: section -->
+<section id="review" class="review" aria-labelledby="review-title">
+  <div class="container narrow">
+    <header class="section-head">
+      <p class="eyebrow">Honest Review</p>
+      <h2 id="review-title">Watch an Honest Review of Fundy's</h2>
+    </header>
+    <figure class="video-wrap">
+      <video controls preload="none" playsinline poster="images/video-poster.jpg">
+        <source src="videos/honest-review.mp4" type="video/mp4">
+        Your browser does not support video. <a href="videos/honest-review.mp4">Download the video</a>.
+      </video>
+      <figcaption>An honest review of Fundy's gourmet cheese spread.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- PART B: JSON-LD (helps Google show a video result) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "Honest Review: Fundy's Gourmet Cheese Spread",
+  "description": "REPLACE with a 1-2 sentence description of the video.",
+  "thumbnailUrl": "https://www.fundys.ph/images/video-poster.jpg",
+  "uploadDate": "REPLACE-YYYY-MM-DD",
+  "duration": "REPLACE-e.g.-PT1M30S",
+  "contentUrl": "https://www.fundys.ph/videos/honest-review.mp4"
+}
+</script>

@@ -51,3 +51,40 @@
   var y = document.getElementById('year');
   if (y) y.textContent = new Date().getFullYear();
 })();
+
+// Upcoming booths: hide events whose last day has passed
+(function () {
+  var list = document.querySelector('[data-booths]');
+  if (!list) return;
+  var now = new Date();
+  var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  var visible = 0;
+  Array.prototype.forEach.call(list.children, function (li) {
+    var parts = (li.getAttribute('data-end') || '').split('-');
+    if (parts.length !== 3) { visible++; return; }
+    var end = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+    if (end < today) { li.hidden = true; } else { visible++; }
+  });
+  if (!visible) {
+    list.hidden = true;
+    var empty = document.querySelector('[data-booths-empty]');
+    if (empty) empty.hidden = false;
+  }
+})();
+
+// Honest review video: load the Facebook player only when the visitor clicks play
+(function () {
+  var box = document.querySelector('[data-video-embed]');
+  if (!box) return;
+  var btn = box.querySelector('[data-play]');
+  btn.addEventListener('click', function () {
+    var iframe = document.createElement('iframe');
+    iframe.src = 'https://www.facebook.com/plugins/video.php?href=' +
+      encodeURIComponent(box.getAttribute('data-src')) + '&show_text=false&autoplay=true';
+    iframe.title = "Honest review of Fundy's gourmet cheese spread";
+    iframe.allow = 'autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share';
+    iframe.allowFullscreen = true;
+    iframe.setAttribute('scrolling', 'no');
+    box.replaceChild(iframe, btn);
+  });
+})();

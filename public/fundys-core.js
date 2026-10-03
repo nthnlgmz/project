@@ -97,14 +97,19 @@
   }
 
   /* ---------- database rows (Supabase, snake_case) <-> objects used on the page (camelCase) ---------- */
+  // Repairs text that was saved with a wrong encoding, e.g. "200g \u00c2\u00b7 Fundy's Spread" -> "200g \u00b7 Fundy's Spread"
+  function fixText(v) {
+    return typeof v === 'string' ? v.replace(/\u00c2(?=[\u00a0-\u00bf])/g, '') : v;
+  }
+
   function productFromRow(r) {
     return {
-      id: r.id, title: r.title, sizeLine: r.size_line || '', grams: r.grams, jars: r.jars,
-      description: r.description, price: Number(r.price),
-      shopeeUrl: r.shopee_url || '', tiktokUrl: r.tiktok_url || '', badge: r.badge || '',
+      id: r.id, title: fixText(r.title), sizeLine: fixText(r.size_line) || '', grams: r.grams, jars: r.jars,
+      description: fixText(r.description), price: Number(r.price),
+      shopeeUrl: r.shopee_url || '', tiktokUrl: r.tiktok_url || '', badge: fixText(r.badge) || '',
       photo: !!r.photo, inStock: r.in_stock !== false, visible: r.visible !== false,
-      image: r.image, webp: !!r.webp, imageAlt: r.image_alt || '',
-      seoName: r.seo_name || '', seoDescription: r.seo_description || '', sortOrder: r.sort_order
+      image: r.image, webp: !!r.webp, imageAlt: fixText(r.image_alt) || '',
+      seoName: fixText(r.seo_name) || '', seoDescription: fixText(r.seo_description) || '', sortOrder: r.sort_order
     };
   }
   function productToRow(p) {
@@ -120,7 +125,7 @@
     return row;
   }
   function boothFromRow(r) {
-    return { id: r.id, name: r.name, city: r.city, region: r.region || 'Metro Manila', address: r.address || '', start: r.start_date, end: r.end_date || r.start_date };
+    return { id: r.id, name: fixText(r.name), city: fixText(r.city), region: r.region || 'Metro Manila', address: r.address || '', start: r.start_date, end: r.end_date || r.start_date };
   }
   function boothToRow(b) {
     return { id: b.id, name: b.name, city: b.city, region: b.region || 'Metro Manila', address: b.address || null, start_date: b.start, end_date: b.end || b.start };

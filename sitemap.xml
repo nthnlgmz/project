@@ -3,13 +3,16 @@
   <url>
     <loc>https://www.fundys.ph/</loc>
     <lastmod>2026-10-03</lastmod>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <image:image><image:loc>https://www.fundys.ph/images/jars-tray.jpg</image:loc><image:title>Fundy's gourmet cheese spread jars</image:title></image:image>
-    <image:image><image:loc>https://www.fundys.ph/images/products/quezo-de-bola-pimiento.jpg</image:loc><image:title>Fundy's Quezo de Bola Pimiento cheese spread</image:title></image:image>
-    <image:image><image:loc>https://www.fundys.ph/images/products/truffle-de-bola.jpg</image:loc><image:title>Fundy's Truffle de Bola cheese spread</image:title></image:image>
-    <image:image><image:loc>https://www.fundys.ph/images/products/basil-pesto-de-bola.jpg</image:loc><image:title>Fundy's Basil Pesto de Bola cheese spread</image:title></image:image>
-    <image:image><image:loc>https://www.fundys.ph/images/products/spicy-quezo-de-bola-pimiento.jpg</image:loc><image:title>Fundy's Spicy Quezo de Bola Pimiento cheese spread</image:title></image:image>
-    <image:image><image:loc>https://www.fundys.ph/images/products/reseller-package-24pcs.jpg</image:loc><image:title>Fundy's 24pcs Quezo de Bola Reseller's Package</image:title></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/jars-tray.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/booth.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/shelf-display.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/owner-at-booth.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/quezo-de-bola-pimiento.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/truffle-de-bola.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/basil-pesto-de-bola.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/spicy-quezo-de-bola-pimiento.jpg</image:loc></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/reseller-package-24pcs.jpg</image:loc></image:image>
   </url>
 </urlset>

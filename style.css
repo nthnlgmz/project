@@ -82,9 +82,10 @@ section{padding:4rem 0}
 .products .eyebrow{color:var(--gold)}
 .slider{position:relative}
 .slider-track{
-  list-style:none;margin:0;
-  padding:.5rem calc(50vw - 50%) 1.2rem .25rem; /* right padding lets the last card scroll fully into view */
-  margin-right:calc(50% - 50vw);                /* track runs to the viewport's right edge so cards bleed off-screen */
+  list-style:none;
+  margin:0 calc(50% - 50vw);                    /* track runs edge to edge so cards continue off-screen on BOTH sides */
+  padding:.5rem calc(50vw - 50%) 1.2rem;        /* keeps the first/last card lined up with the page container */
+  scroll-padding-inline:calc(50vw - 50%);       /* snap cards to the container edge, not the screen edge */
   display:flex;gap:1.25rem;overflow-x:auto;
   scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;
   scrollbar-width:none;-ms-overflow-style:none;  /* hide scrollbar: Firefox / old Edge */
@@ -175,7 +176,7 @@ details p{margin:0;color:var(--muted)}
 
 /* Upcoming booths */
 .booths{background:var(--cream)}
-.booths-layout{display:grid;grid-template-columns:.8fr 1.2fr;gap:3rem;align-items:center}
+.booths-layout{display:grid;grid-template-columns:minmax(0,380px) max-content;gap:4rem;align-items:center;justify-content:center}
 .booths-figure{margin:0}
 .booths-figure img{width:100%;border-radius:var(--radius);box-shadow:var(--shadow);aspect-ratio:4/5;object-fit:cover;object-position:center top}
 .booths-figure figcaption{text-align:center;font-size:.9rem;color:var(--muted);margin-top:.6rem}
@@ -190,8 +191,9 @@ details p{margin:0;color:var(--muted)}
 .booth-item h4{font-family:"Fraunces",Georgia,serif;font-size:1.2rem;font-weight:600;line-height:1.25;color:var(--green);margin:0 0 .1rem}
 .booth-city{margin:0;color:var(--muted);font-weight:600}
 @media (max-width:820px){
-  .booths-layout{grid-template-columns:1fr;gap:2rem}
-  .booths-figure{max-width:420px;margin-inline:auto}
+  .booths-layout{grid-template-columns:minmax(0,420px);gap:2rem}
+  .booths-figure{width:100%;margin-inline:auto}
+  .booth-timeline{max-width:100%}
 }
 .booth-empty{text-align:center;color:var(--muted)}
 .cta-center{justify-content:center}

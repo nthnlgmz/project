@@ -1,0 +1,68 @@
+[
+  {
+    "@type": "Organization",
+    "@id": "https://www.fundys.ph/#organization",
+    "name": "Fundy's",
+    "url": "https://www.fundys.ph/",
+    "logo": "https://www.fundys.ph/images/og-image.jpg",
+    "description": "Fundy's makes gourmet cheese spreads (palaman) with imported Edam cheese.",
+    "slogan": "Fundy's Spread, made with Imported Edam Cheese",
+    "areaServed": {
+      "@type": "Country",
+      "name": "Philippines"
+    },
+    "sameAs": [
+      "https://ph.shp.ee/pDAPXb2F",
+      "https://vt.tiktok.com/ZS9DhRoY41tqs-isnu7/",
+      "https://www.facebook.com/share/1P3eAZ63ca/"
+    ],
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+63-966-693-0825",
+        "areaServed": "PH"
+      },
+      {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+63-917-799-4490",
+        "areaServed": "PH",
+        "description": "WhatsApp"
+      }
+    ],
+    "alternateName": "Fundy's Spread"
+  },
+  {
+    "@type": "WebSite",
+    "@id": "https://www.fundys.ph/#website",
+    "url": "https://www.fundys.ph/",
+    "name": "Fundy's",
+    "inLanguage": "en-PH",
+    "publisher": {
+      "@id": "https://www.fundys.ph/#organization"
+    },
+    "alternateName": "Fundy's Spread"
+  },
+  {
+    "@type": "WebPage",
+    "@id": "https://www.fundys.ph/#webpage",
+    "url": "https://www.fundys.ph/",
+    "name": "Fundy's Spread | Gourmet Cheese Palaman with Imported Edam",
+    "isPartOf": {
+      "@id": "https://www.fundys.ph/#website"
+    },
+    "about": {
+      "@id": "https://www.fundys.ph/#organization"
+    },
+    "primaryImageOfPage": {
+      "@type": "ImageObject",
+      "url": "https://www.fundys.ph/images/jars-tray.jpg"
+    },
+    "inLanguage": "en-PH",
+    "description": "Fundy's Spread: gourmet cheese palaman made with imported Edam. Pimiento, Spicy, Truffle and Basil Pesto in 200g jars. Order on Shopee or TikTok Shop.",
+    "mainEntity": {
+      "@id": "https://www.fundys.ph/#flavors"
+    }
+  }
+]

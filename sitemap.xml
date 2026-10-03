@@ -6,9 +6,9 @@
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <image:image><image:loc>https://www.fundys.ph/images/jars-tray.jpg</image:loc><image:title>Fundy's gourmet cheese spread jars</image:title></image:image>
-    <image:image><image:loc>https://www.fundys.ph/images/products/quezo-de-bola.jpg</image:loc><image:title>Fundy's Quezo de Bola cheese spread</image:title></image:image>
     <image:image><image:loc>https://www.fundys.ph/images/products/quezo-de-bola-pimiento.jpg</image:loc><image:title>Fundy's Quezo de Bola Pimiento cheese spread</image:title></image:image>
-    <image:image><image:loc>https://www.fundys.ph/images/products/truffle-de-sola.jpg</image:loc><image:title>Fundy's Truffle de Sola cheese spread</image:title></image:image>
-    <image:image><image:loc>https://www.fundys.ph/images/products/basil-pesto.jpg</image:loc><image:title>Fundy's Basil Pesto cheese spread</image:title></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/truffle-de-bola.jpg</image:loc><image:title>Fundy's Truffle de Bola cheese spread</image:title></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/basil-pesto-de-bola.jpg</image:loc><image:title>Fundy's Basil Pesto de Bola cheese spread</image:title></image:image>
+    <image:image><image:loc>https://www.fundys.ph/images/products/spicy-quezo-de-bola-pimiento.jpg</image:loc><image:title>Fundy's Spicy Quezo de Bola Pimiento cheese spread</image:title></image:image>
   </url>
 </urlset>

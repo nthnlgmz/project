@@ -39,9 +39,16 @@
     var d = new Date(+p[0], +p[1] - 1, +p[2]);
     return isNaN(d.getTime()) ? null : d;
   }
+  // "Today" in Philippine time (Asia/Manila), so a booth disappears at the same moment for every visitor and the server.
   function todayDate() {
-    var n = new Date();
-    return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+    try {
+      var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' })
+        .format(new Date()).split('-');
+      return new Date(+parts[0], +parts[1] - 1, +parts[2]);
+    } catch (e) {
+      var n = new Date();
+      return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+    }
   }
   function isPast(b, today) {
     var e = parseDate(b.end || b.start);
@@ -273,3 +280,4 @@
     buildEvent: buildEvent, buildProduct: buildProduct, applyToGraph: applyToGraph, buildSitemap: buildSitemap
   };
 });
+         

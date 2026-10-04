@@ -7,7 +7,10 @@ export default function Footer() {
         <div>
           <a className="logo" href="/" aria-label="Fundy's home">Fundy's</a>
           <p>Fundy's Spread made with Imported Edam Cheese.</p>
-          <p className="footer-contact"><a href="tel:+639666930825">0966 693 0825</a> &middot; <a href="https://wa.me/639177994490" target="_blank" rel="noopener">WhatsApp +63 917 799 4490</a></p>
+          <p className="footer-contact">
+            <a href="tel:+639666930825" aria-label="Call Fundy's"><svg className="icon" aria-hidden="true"><use href="#i-phone" /></svg></a>
+            <a href="https://wa.me/639177994490" target="_blank" rel="noopener" aria-label="Message Fundy's on WhatsApp"><svg className="icon" aria-hidden="true"><use href="#i-whatsapp" /></svg></a>
+          </p>
         </div>
         <nav aria-label="Footer">
           <ul>

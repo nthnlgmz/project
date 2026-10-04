@@ -8,7 +8,10 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
 
-  var SITE = 'https://fundys-spread.vercel.app/';
+  // Public address of the site. Next.js fills in NEXT_PUBLIC_SITE_URL at build time; the admin page doesn't need it.
+  var ENV_SITE;
+  try { ENV_SITE = process.env.NEXT_PUBLIC_SITE_URL; } catch (e) { ENV_SITE = undefined; }
+  var SITE = String(ENV_SITE || 'https://fundys-spread.vercel.app').replace(/\/+$/, '') + '/';
   var ORG_ID = SITE + '#organization';
   var LIST_ID = SITE + '#flavors';
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -125,10 +128,10 @@
     return row;
   }
   function boothFromRow(r) {
-    return { id: r.id, name: fixText(r.name), city: fixText(r.city), region: r.region || 'Metro Manila', address: r.address || '', start: r.start_date, end: r.end_date || r.start_date };
+    return { id: r.id, name: fixText(r.name), city: fixText(r.city), region: fixText(r.region) || '', address: r.address || '', start: r.start_date, end: r.end_date || r.start_date };
   }
   function boothToRow(b) {
-    return { id: b.id, name: b.name, city: b.city, region: b.region || 'Metro Manila', address: b.address || null, start_date: b.start, end_date: b.end || b.start };
+    return { id: b.id, name: b.name, city: b.city, region: b.region || '', address: b.address || null, start_date: b.start, end_date: b.end || b.start };
   }
 
   /* ---------- HTML rendering ---------- */
@@ -173,7 +176,7 @@
     var addr = { '@type': 'PostalAddress' };
     if (b.address) addr.streetAddress = b.address;
     addr.addressLocality = b.city;
-    addr.addressRegion = b.region || 'Metro Manila';
+    if (b.region) addr.addressRegion = b.region;
     addr.addressCountry = 'PH';
     return {
       '@type': 'Event',

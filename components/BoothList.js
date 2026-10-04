@@ -17,7 +17,14 @@ export default function BoothList({ booths: initial }) {
 
   if (!visible.length) {
     return (
-      <p className="booth-empty">No booth dates are announced right now. Follow us on Facebook to catch the next one.</p>
+      <div className="booth-empty">
+        <h3>No booths lined up right now</h3>
+        <p>We announce new bazaars and pop-ups on our Facebook page as soon as they are confirmed. Follow us to catch the next one.</p>
+        <a className="btn btn-social btn-facebook" href="https://www.facebook.com/share/1P3eAZ63ca/" target="_blank" rel="noopener me">
+          <svg className="icon" aria-hidden="true"><use href="#i-facebook" /></svg>
+          <span className="btn-label">Follow on Facebook</span>
+        </a>
+      </div>
     );
   }
 

@@ -18,6 +18,7 @@
     #fff;
 }
 *,*::before,*::after{box-sizing:border-box}
+*{-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth;scroll-padding-top:80px}
 body{margin:0;font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--cream);line-height:1.65;font-size:1.0625rem}
 img{max-width:100%;height:auto;display:block}
@@ -285,3 +286,6 @@ details p{margin:0;color:var(--muted)}
   .mobile-menu li:last-child a{border-bottom:0}
   .mobile-menu a:hover{color:var(--red)}
 }
+
+/* No tap highlight on phones, so taps still get a small press effect instead */
+.btn:active,.slider-btn:active,.nav-toggle:active,.cart-link:active{transform:scale(.96)}

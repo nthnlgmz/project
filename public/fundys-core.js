@@ -8,7 +8,7 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
 
-  var SITE = 'https://www.fundys.ph/';
+  var SITE = 'https://fundys-spread.vercel.app/';
   var ORG_ID = SITE + '#organization';
   var LIST_ID = SITE + '#flavors';
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

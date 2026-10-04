@@ -167,9 +167,8 @@
       </form>
 
       <h2 style="margin-top:1.6rem">Booth schedule</h2>
-      <p class="hint">Sorted by date. Past booths are hidden on the website automatically, so you don't have to delete them.</p>
+      <p class="hint">Sorted by date. A booth disappears from the website (and from this list) automatically the day after its last day.</p>
       <ul class="rows" id="boothList"></ul>
-      <div class="actions"><button type="button" class="btn small ghost" id="clearPast">Remove all past booths</button></div>
     </section>
 
     <!-- ================= PRODUCTS ================= -->
@@ -438,7 +437,7 @@
   });
 
   function renderBooths() {
-    var list = C.sortBooths(state.booths);
+    var list = C.sortBooths(state.booths).filter(function (b) { return !C.isPast(b); });   // finished booths drop off automatically
     $('boothList').innerHTML = list.length ? list.map(function (b) {
       var past = C.isPast(b);
       return '<li class="row' + (past ? ' past' : '') + '"><div class="grow"><strong>' + C.esc(C.formatRange(b.start, b.end)) +
@@ -448,7 +447,7 @@
           { act: 'edit-booth', id: b.id, label: 'Edit' },
           { act: 'del-booth', id: b.id, label: 'Delete', danger: true }
         ]) + '</li>';
-    }).join('') : '<li class="hint">No booths yet. Add one above.</li>';
+    }).join('') : '<li class="hint">No upcoming booths. Add one above.</li>';
   }
   $('boothList').addEventListener('click', function (e) {
     var t = e.target.closest('button[data-act]'); if (!t) return;
@@ -469,17 +468,6 @@
       });
     }
   });
-  $('clearPast').addEventListener('click', function () {
-    var ids = state.booths.filter(function (b) { return C.isPast(b); }).map(function (b) { return b.id; });
-    if (!ids.length) { setMsg('boothMsg', 'There are no past booths to remove.'); return; }
-    if (!confirm('Remove ' + ids.length + ' past booth' + (ids.length > 1 ? 's' : '') + '?')) return;
-    sb.from('booths').delete().in('id', ids).then(function (r) {
-      if (r.error) return fail('boothMsg', r.error);
-      setMsg('boothMsg', 'Past booths removed.', 'ok');
-      return reloadBooths();
-    });
-  });
-
   /* ---------------- products ---------------- */
   function productFromForm() {
     return {

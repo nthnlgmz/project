@@ -246,3 +246,16 @@ details p{margin:0;color:var(--muted)}
   .btn-social .icon{width:32px;height:32px}
   .btn-social .btn-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 }
+
+/* Next-booth banner */
+.booth-banner{position:fixed;z-index:60;left:1rem;right:1rem;bottom:1rem;margin-inline:auto;max-width:400px;background:var(--paper);color:var(--ink);border:2px solid var(--green);border-bottom:6px solid var(--gold);border-radius:var(--radius);box-shadow:0 12px 36px rgba(21,52,39,.28);padding:1rem 1.1rem 1.1rem;animation:banner-in .45s ease-out both}
+@media (min-width:640px){.booth-banner{left:auto;right:1.25rem;margin-inline:0}}
+.booth-banner-head{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem}
+.booth-banner-icon{width:44px;height:44px;border-radius:50%;flex:none;background:#fff;border:2px solid var(--gold);object-fit:contain;padding:5px}
+.booth-banner-name{font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:1.4rem;line-height:1;color:var(--green)}
+.booth-banner-text{margin:0 0 .9rem;color:var(--muted);font-size:1rem;line-height:1.5}
+.booth-banner-text strong{color:var(--ink)}
+.booth-banner-actions{display:flex;gap:.6rem;flex-wrap:wrap}
+.booth-banner .btn{padding:.55em 1.2em;font-size:.95rem}
+@keyframes banner-in{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.booth-banner{animation:none}}

@@ -1,10 +1,10 @@
 [
   {
     "@type": "Organization",
-    "@id": "https://www.fundys.ph/#organization",
+    "@id": "__SITE__/#organization",
     "name": "Fundy's",
-    "url": "https://www.fundys.ph/",
-    "logo": "https://www.fundys.ph/images/og-image.jpg",
+    "url": "__SITE__/",
+    "logo": "__SITE__/images/og-image.jpg",
     "description": "Fundy's makes gourmet cheese spreads (palaman) with imported Edam cheese.",
     "slogan": "Fundy's Spread, made with Imported Edam Cheese",
     "areaServed": {
@@ -35,34 +35,34 @@
   },
   {
     "@type": "WebSite",
-    "@id": "https://www.fundys.ph/#website",
-    "url": "https://www.fundys.ph/",
+    "@id": "__SITE__/#website",
+    "url": "__SITE__/",
     "name": "Fundy's",
     "inLanguage": "en-PH",
     "publisher": {
-      "@id": "https://www.fundys.ph/#organization"
+      "@id": "__SITE__/#organization"
     },
     "alternateName": "Fundy's Spread"
   },
   {
     "@type": "WebPage",
-    "@id": "https://www.fundys.ph/#webpage",
-    "url": "https://www.fundys.ph/",
+    "@id": "__SITE__/#webpage",
+    "url": "__SITE__/",
     "name": "Fundy's Spread | Gourmet Cheese Palaman with Imported Edam",
     "isPartOf": {
-      "@id": "https://www.fundys.ph/#website"
+      "@id": "__SITE__/#website"
     },
     "about": {
-      "@id": "https://www.fundys.ph/#organization"
+      "@id": "__SITE__/#organization"
     },
     "primaryImageOfPage": {
       "@type": "ImageObject",
-      "url": "https://www.fundys.ph/images/jars-tray.jpg"
+      "url": "__SITE__/images/jars-tray.jpg"
     },
     "inLanguage": "en-PH",
     "description": "Fundy's Spread: gourmet cheese palaman made with imported Edam. Pimiento, Spicy, Truffle and Basil Pesto in 200g jars. Order on Shopee or TikTok Shop.",
     "mainEntity": {
-      "@id": "https://www.fundys.ph/#flavors"
+      "@id": "__SITE__/#flavors"
     }
   }
 ]

@@ -56,7 +56,7 @@ export default function Header() {
             {LINKS.map((l) => (
               <li key={l.href}><a href={l.href}>{l.label}</a></li>
             ))}
-            <li><a className="btn btn-small" href="#shop">Shop Now</a></li>
+            <li><a className="btn btn-small" href="#products">Shop Now</a></li>
           </ul>
         </nav>
 

@@ -108,7 +108,6 @@
     <nav class="tabs" role="tablist" aria-label="Admin sections">
       <button type="button" role="tab" id="t-booths" data-tab="booths" aria-selected="true">Upcoming booths</button>
       <button type="button" role="tab" id="t-products" data-tab="products" aria-selected="false">Products</button>
-      <button type="button" role="tab" id="t-export" data-tab="export" aria-selected="false">Metadata &amp; publish</button>
     </nav>
 
     <!-- ================= BOOTHS ================= -->
@@ -125,8 +124,8 @@
             <input type="text" id="bCity" placeholder="e.g. Taguig" required>
           </div>
           <div>
-            <label for="bRegion">Region <span class="hint">(for search engines)</span></label>
-            <input type="text" id="bRegion" value="Metro Manila">
+            <label for="bRegion">Region <span class="hint">(optional)</span></label>
+            <input type="text" id="bRegion">
           </div>
           <div class="full">
             <label for="bAddress">Street address <span class="hint">(optional, helps Google show the event)</span></label>
@@ -227,17 +226,6 @@
       <ul class="rows" id="productList"></ul>
     </section>
 
-    <!-- ================= METADATA ================= -->
-    <section class="panel" id="tab-export" role="tabpanel" aria-labelledby="t-export" hidden>
-      <h2>Metadata preview</h2>
-      <p>Changes you make here are saved to the database straight away and visitors see them on the next page load. The Google structured data below is built automatically from your booths and products. It is written into the page HTML at the next site build, which happens automatically.</p>
-      <div class="file-card">
-        <header><h3>Structured data (Events and Products)</h3>
-          <span><button type="button" class="btn small ghost" id="copySchema">Copy</button></span></header>
-        <p class="hint">Only upcoming booths and visible products are included. After the next build, check the live page with Google's <a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener">Rich Results Test</a>.</p>
-        <pre id="outSchema"></pre>
-      </div>
-    </section>
     </div>
   </main>
 
@@ -310,24 +298,23 @@
   function reloadBooths() {
     return sb.from('booths').select('*').order('start_date').then(function (r) {
       if (r.error) { setMsg('boothMsg', 'Could not load booths: ' + r.error.message, 'err'); return; }
-      state.booths = (r.data || []).map(C.boothFromRow); renderBooths(); refreshExport();
+      state.booths = (r.data || []).map(C.boothFromRow); renderBooths();
     });
   }
   function reloadProducts() {
     return sb.from('products').select('*').order('sort_order').then(function (r) {
       if (r.error) { setMsg('productMsg', 'Could not load products: ' + r.error.message, 'err'); return; }
-      state.products = (r.data || []).map(C.productFromRow); renderProducts(); refreshExport();
+      state.products = (r.data || []).map(C.productFromRow); renderProducts();
     });
   }
   function loadAll() { return Promise.all([reloadBooths(), reloadProducts()]).then(function () { updateBoothPreview(); refreshAutoFields(); }); }
 
   /* ---------------- tabs ---------------- */
   function showTab(name) {
-    ['booths', 'products', 'export'].forEach(function (t) {
+    ['booths', 'products'].forEach(function (t) {
       $('tab-' + t).hidden = t !== name;
       $('t-' + t).setAttribute('aria-selected', t === name ? 'true' : 'false');
     });
-    if (name === 'export') refreshExport();
   }
   Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'), function (b) {
     b.addEventListener('click', function () { showTab(b.getAttribute('data-tab')); });
@@ -366,7 +353,7 @@
   /* ---------------- booths ---------------- */
   function boothFromForm() {
     var start = val('bStart');
-    return { name: val('bName'), city: val('bCity'), region: val('bRegion') || 'Metro Manila', address: val('bAddress'), start: start, end: val('bEnd') || start };
+    return { name: val('bName'), city: val('bCity'), region: val('bRegion'), address: val('bAddress'), start: start, end: val('bEnd') || start };
   }
   function updateBoothPreview() {
     var b = boothFromForm();
@@ -383,7 +370,7 @@
 
   function resetBoothForm() {
     editingBooth = null;
-    $('boothForm').reset(); $('bRegion').value = 'Metro Manila';
+    $('boothForm').reset();
     $('boothFormTitle').textContent = 'Add an upcoming booth';
     $('boothSave').textContent = 'Add booth'; $('boothCancel').hidden = true;
     updateBoothPreview();
@@ -430,7 +417,7 @@
     var b = state.booths.filter(function (x) { return x.id === id; })[0]; if (!b) return;
     if (t.getAttribute('data-act') === 'edit-booth') {
       editingBooth = id;
-      $('bName').value = b.name; $('bCity').value = b.city; $('bRegion').value = b.region || 'Metro Manila';
+      $('bName').value = b.name; $('bCity').value = b.city; $('bRegion').value = b.region || '';
       $('bAddress').value = b.address || ''; $('bStart').value = b.start; $('bEnd').value = b.end || b.start;
       $('boothFormTitle').textContent = 'Edit booth'; $('boothSave').textContent = 'Save changes'; $('boothCancel').hidden = false;
       updateBoothPreview(); window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -616,17 +603,6 @@
         return reloadProducts();
       });
     }
-  });
-
-  /* ---------------- metadata preview ---------------- */
-  var schemaText = '';
-  function refreshExport() {
-    schemaText = JSON.stringify({ '@context': 'https://schema.org', '@graph': C.applyToGraph([], state) }, null, 2);
-    $('outSchema').textContent = schemaText;
-  }
-  $('copySchema').addEventListener('click', function () {
-    var btn = this, done = function () { var o = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function () { btn.textContent = o; }, 1500); };
-    if (navigator.clipboard) navigator.clipboard.writeText(schemaText).then(done);
   });
 })();
   </script>

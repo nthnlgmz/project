@@ -205,6 +205,12 @@ details p{margin:0;color:var(--muted)}
 }
 .booth-empty{text-align:center;color:var(--muted)}
 .booths-layout .booth-empty{max-width:26rem;text-align:left}
+.booth-empty h3{margin-bottom:.4em}
+.booth-empty .btn{margin-top:.4rem}
+/* keep the text label on the Facebook button even on phones (the round icon-only style is for the shop buttons) */
+.booth-empty .btn-social{width:auto;height:auto;padding:.8em 1.5em;border-radius:999px}
+.booth-empty .btn-social .icon{width:1.25em;height:1.25em}
+.booth-empty .btn-social .btn-label{position:static;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal}
 .cta-center{justify-content:center}
 
 /* Contact */

@@ -5,6 +5,7 @@ import EnjoySection from '../components/EnjoySection';
 import ShopSection from '../components/ShopSection';
 import BoothsSection from '../components/BoothsSection';
 import FaqSection from '../components/FaqSection';
+import BoothBanner from '../components/BoothBanner';
 import ContactSection from '../components/ContactSection';
 import { getProducts, getBooths } from '../lib/data';
 import { buildSchema, toJsonLd } from '../lib/schema';
@@ -33,6 +34,7 @@ export default async function Home() {
         <FaqSection />
         <ContactSection />
       </main>
+      <BoothBanner booths={booths} />
     </>
   );
 }

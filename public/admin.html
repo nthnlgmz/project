@@ -17,6 +17,17 @@
     h1,h2,h3{font-family:"Fraunces",Georgia,serif;color:var(--green);margin:0 0 .5rem;line-height:1.2}
     h2{font-size:1.5rem}h3{font-size:1.1rem}
     .bar{position:sticky;top:0;z-index:10;background:var(--green);color:var(--cream);display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;padding:.6rem 1rem;border-bottom:3px solid var(--gold)}
+    .avatar-wrap{position:relative;margin-left:auto;display:none}
+    .avatar{width:42px;height:42px;border-radius:50%;border:2px solid var(--gold);background:var(--red);color:var(--cream);font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:1.1rem;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0;text-transform:uppercase}
+    .user-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:30;width:min(260px,calc(100vw - 2rem));background:#fff;color:var(--ink);border:2px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:.4rem;display:none}
+    .user-menu.open{display:block}
+    .user-menu .email{margin:0;padding:.55rem .7rem;font-size:.9rem;color:var(--muted);overflow-wrap:anywhere;border-bottom:1px solid var(--line);margin-bottom:.3rem}
+    .user-menu button{display:block;width:100%;text-align:left;font:inherit;font-weight:700;background:none;border:0;padding:.7em .7em;border-radius:8px;cursor:pointer;color:var(--red)}
+    .user-menu button:hover{background:var(--paper)}
+    @media (max-width:640px){
+      #who,#signOut{display:none!important}
+      .avatar-wrap:not([hidden]){display:block}
+    }
     .logo{background:var(--red);color:var(--cream);font-family:"Fraunces",Georgia,serif;font-weight:800;font-style:italic;padding:.1em .8em;border-radius:999px;border:2px solid var(--gold)}
     .status{margin-left:auto;font-size:.9rem;padding:.2em .8em;border-radius:999px;background:rgba(255,255,255,.15)}
     .status.dirty{background:var(--gold);color:var(--green-dark);font-weight:700}
@@ -89,6 +100,13 @@
     <strong>Admin</strong>
     <span class="status" id="who" role="status"></span>
     <button type="button" class="btn small ghost" id="signOut" hidden style="color:var(--cream);border-color:var(--cream)">Sign out</button>
+    <div class="avatar-wrap" id="avatarWrap" hidden>
+      <button type="button" class="avatar" id="avatarBtn" aria-label="Account menu" aria-haspopup="true" aria-expanded="false"></button>
+      <div class="user-menu" id="userMenu" role="menu">
+        <p class="email" id="menuEmail"></p>
+        <button type="button" role="menuitem" id="signOutMenu">Sign out</button>
+      </div>
+    </div>
   </header>
 
   <main class="wrap">
@@ -254,11 +272,16 @@
   /* ---------------- sign in ---------------- */
   function showLogin(msg, kind) {
     $('app').hidden = true; $('loginPanel').hidden = false; $('signOut').hidden = true; $('who').textContent = '';
+    $('avatarWrap').hidden = true; closeUserMenu();
     setMsg('loginMsg', msg || '', kind || (msg ? 'err' : ''));
   }
   function enter(user) {
     $('loginPanel').hidden = true; $('app').hidden = false; $('signOut').hidden = false;
-    $('who').textContent = user.email || 'Signed in';
+    var email = user.email || 'Signed in';
+    $('who').textContent = email;
+    $('avatarBtn').textContent = email.charAt(0);
+    $('menuEmail').textContent = email;
+    $('avatarWrap').hidden = false;
     loadAll();
   }
   function verifyAdmin(user) {
@@ -288,7 +311,23 @@
       verifyAdmin(r.data.user);
     });
   });
-  $('signOut').addEventListener('click', function () { sb.auth.signOut().then(function () { showLogin(); }); });
+  function doSignOut() { closeUserMenu(); sb.auth.signOut().then(function () { showLogin(); }); }
+  $('signOut').addEventListener('click', doSignOut);
+  $('signOutMenu').addEventListener('click', doSignOut);
+
+  /* account dropdown (small screens) */
+  function closeUserMenu() {
+    $('userMenu').classList.remove('open');
+    $('avatarBtn').setAttribute('aria-expanded', 'false');
+  }
+  $('avatarBtn').addEventListener('click', function (e) {
+    e.stopPropagation();
+    var open = !$('userMenu').classList.contains('open');
+    $('userMenu').classList.toggle('open', open);
+    this.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', function (e) { if (!e.target.closest('#avatarWrap')) closeUserMenu(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeUserMenu(); });
   sb.auth.getSession().then(function (r) {
     var s = r.data && r.data.session;
     if (s) verifyAdmin(s.user); else showLogin();

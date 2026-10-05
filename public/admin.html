@@ -282,12 +282,13 @@
     loadAll();
   }
   function verifyAdmin(session) {
-    var user = session.user;
+    var user = session.user, res403 = false;
     fetch('/api/admin-auth', { method: 'POST', headers: { Authorization: 'Bearer ' + session.access_token } })
-      .then(function (res) { return res.json().catch(function () { return {}; }); })
+      .then(function (res) { res403 = res.status === 403; return res.json().catch(function () { return {}; }); })
       .then(function (j) {
         if (j && j.ok) enter(user);
-        else { sb.auth.signOut(); showLogin((j && j.error) || 'This Google account is not on the admin list.'); }
+        else if (res403) { sb.auth.signOut().then(function () { window.location.replace('/403'); }); }
+        else { sb.auth.signOut(); showLogin((j && j.error) || 'Could not verify admin access.'); }
       })
       .catch(function () { sb.auth.signOut(); showLogin('Could not verify admin access. Try again.'); });
   }

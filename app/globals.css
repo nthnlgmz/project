@@ -289,3 +289,14 @@ details p{margin:0;color:var(--muted)}
 
 /* No tap highlight on phones, so taps still get a small press effect instead */
 .btn:active,.slider-btn:active,.nav-toggle:active,.cart-link:active{transform:scale(.96)}
+
+/* Footer always sits at the bottom, and short pages (like the 404) fill the screen between header and footer */
+body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
+.not-found{flex:1;display:grid;place-items:center;text-align:center;padding:1rem;position:relative;background:var(--gingham)}
+.not-found::before{content:"";position:absolute;inset:0;background:rgba(251,244,230,.92)}
+.not-found-inner{position:relative;max-width:34rem}
+.not-found-code{font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:clamp(3.6rem,min(20vw,13vh),8rem);line-height:1;color:var(--red);margin:0 0 .1em}
+.not-found h1{font-size:clamp(1.5rem,4.5vw,2.1rem);margin-bottom:.35em}
+.not-found p{color:var(--muted);margin-bottom:.6em}
+.not-found .not-found-code{color:var(--red)}
+.not-found .cta-row{margin-top:1rem}

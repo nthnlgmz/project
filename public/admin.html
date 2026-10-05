@@ -285,12 +285,26 @@
     loadAll();
   }
   function verifyAdmin(user) {
-    sb.from('admins').select('user_id').eq('user_id', user.id).maybeSingle().then(function (r) {
-      if (r.error || !r.data) {
+    var email = user.email || '';
+    if (!email) {
+      sb.auth.signOut();
+      showLogin('Google account did not provide an email address.');
+      return;
+    }
+    fetch('/api/check-admin?email=' + encodeURIComponent(email))
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (!data || !data.authorized) {
+          sb.auth.signOut();
+          showLogin('This Google account is not authorized as an administrator.');
+        } else {
+          enter(user);
+        }
+      })
+      .catch(function (err) {
         sb.auth.signOut();
-        showLogin('This account is signed in but is not an admin. Ask the site owner to add it to the admins table.');
-      } else enter(user);
-    });
+        showLogin('Could not verify admin status: ' + (err.message || err));
+      });
   }
 
   if (!CFG.url || !CFG.key || !window.supabase) {
@@ -317,12 +331,6 @@
 
   /* account dropdown (small screens) */
   function closeUserMenu() {
-    $('userMenu').classList.remove('open');
-    $('avatarBtn').setAttribute('aria-expanded', 'false');
-  }
-  $('avatarBtn').addEventListener('click', function (e) {
-    e.stopPropagation();
-    var open = !$('userMenu').classList.contains('open');
     $('userMenu').classList.remove('open');
     $('avatarBtn').setAttribute('aria-expanded', 'false');
   }

@@ -113,13 +113,10 @@
   <main class="wrap">
     <section class="panel" id="loginPanel" style="max-width:420px;margin-inline:auto" hidden>
       <h2>Admin sign in</h2>
-      <div style="text-align:center">
-        <p class="hint" style="margin-bottom:1.2rem">Sign in with your authorized Google administrator account.</p>
-        <button type="button" class="btn" id="googleLoginBtn" style="display:inline-flex;align-items:center;justify-content:center;gap:.6rem;width:100%;background:#fff;color:#2a2420;border-color:var(--line)">
-          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.15v3.15C3.19 21.32 7.27 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.15C.42 8.08 0 9.74 0 12s.42 3.92 1.15 5.39l4.12-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.27 0 3.19 2.68 1.15 6.61l4.12 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
-          Sign in with Google
-        </button>
-        <p class="msg" id="loginMsg" role="status" style="margin-top:1rem"></p>
+      <div id="loginForm">
+        <p style="margin:0 0 1rem;color:var(--muted)">Sign in with an approved Google account.</p>
+        <div class="actions"><button type="button" class="btn" id="loginBtn">Sign in with Google</button></div>
+        <p class="msg" id="loginMsg" role="status"></p>
       </div>
     </section>
 
@@ -284,27 +281,15 @@
     $('avatarWrap').hidden = false;
     loadAll();
   }
-  function verifyAdmin(user) {
-    var email = user.email || '';
-    if (!email) {
-      sb.auth.signOut();
-      showLogin('Google account did not provide an email address.');
-      return;
-    }
-    fetch('/api/check-admin?email=' + encodeURIComponent(email))
-      .then(function (res) { return res.json(); })
-      .then(function (data) {
-        if (!data || !data.authorized) {
-          sb.auth.signOut();
-          showLogin('This Google account is not authorized as an administrator.');
-        } else {
-          enter(user);
-        }
+  function verifyAdmin(session) {
+    var user = session.user;
+    fetch('/api/admin-auth', { method: 'POST', headers: { Authorization: 'Bearer ' + session.access_token } })
+      .then(function (res) { return res.json().catch(function () { return {}; }); })
+      .then(function (j) {
+        if (j && j.ok) enter(user);
+        else { sb.auth.signOut(); showLogin((j && j.error) || 'This Google account is not on the admin list.'); }
       })
-      .catch(function (err) {
-        sb.auth.signOut();
-        showLogin('Could not verify admin status: ' + (err.message || err));
-      });
+      .catch(function () { sb.auth.signOut(); showLogin('Could not verify admin access. Try again.'); });
   }
 
   if (!CFG.url || !CFG.key || !window.supabase) {
@@ -315,14 +300,10 @@
   }
   sb = window.supabase.createClient(CFG.url, CFG.key);
 
-  $('loginForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (!val('lEmail') || !$('lPass').value) { setMsg('loginMsg', 'Enter your email and password.', 'err'); return; }
-    $('loginBtn').disabled = true; setMsg('loginMsg', 'Signing in\u2026');
-    sb.auth.signInWithPassword({ email: val('lEmail'), password: $('lPass').value }).then(function (r) {
-      $('loginBtn').disabled = false; $('lPass').value = '';
-      if (r.error) { setMsg('loginMsg', 'Sign in failed: ' + r.error.message, 'err'); return; }
-      verifyAdmin(r.data.user);
+  $('loginBtn').addEventListener('click', function () {
+    $('loginBtn').disabled = true; setMsg('loginMsg', 'Redirecting to Google\u2026');
+    sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/admin.html', queryParams: { prompt: 'select_account' } } }).then(function (r) {
+      if (r.error) { $('loginBtn').disabled = false; setMsg('loginMsg', 'Sign in failed: ' + r.error.message, 'err'); }
     });
   });
   function doSignOut() { closeUserMenu(); sb.auth.signOut().then(function () { showLogin(); }); }
@@ -344,7 +325,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeUserMenu(); });
   sb.auth.getSession().then(function (r) {
     var s = r.data && r.data.session;
-    if (s) verifyAdmin(s.user); else showLogin();
+    if (s) { if (window.location.hash || window.location.search) history.replaceState(null, '', window.location.pathname); verifyAdmin(s); } else showLogin();
   });
 
   /* ---------------- load ---------------- */

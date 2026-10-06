@@ -11,12 +11,15 @@ export default function Hero() {
             <a className="btn btn-ghost" href="#shop">Where to Buy</a>
           </div>
         </div>
-        <figure className="hero-figure">
-          <picture>
-            <source srcSet="/images/jars-tray.webp" type="image/webp" />
-            <img src="/images/jars-tray.jpg" width="900" height="1202" alt="Four open jars of Fundy's Spread on a wooden tray with spreaders" fetchPriority="high" />
-          </picture>
-        </figure>
+        <div className="hero-media">
+          <figure className="hero-figure">
+            <picture>
+              <source srcSet="/images/jars-tray.webp" type="image/webp" />
+              <img src="/images/jars-tray.jpg" width="900" height="1202" alt="Four open jars of Fundy's Spread on a wooden tray with spreaders" fetchPriority="high" />
+            </picture>
+          </figure>
+          <img className="hero-wheel" src="/images/cheese-wheel.webp" width="795" height="584" alt="" aria-hidden="true" />
+        </div>
       </div>
     </section>
   );

@@ -49,7 +49,7 @@ export default function Header() {
           </svg>
         </button>
 
-        <a className="logo" href="/" aria-label="Fundy's home">Fundy's</a>
+        <a className="logo" href="/" aria-label="Fundy's home"><img src="/images/logo-pill.webp" width="839" height="339" alt="Fundy's" /></a>
 
         <nav aria-label="Primary" className="primary-nav">
           <ul>

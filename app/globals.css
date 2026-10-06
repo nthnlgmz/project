@@ -199,6 +199,18 @@ details p{margin:0;color:var(--muted)}
 .booth-date{font-family:"Fraunces",Georgia,serif;font-weight:800;font-size:1.35rem;color:var(--red);margin:0 0 .15rem}
 .booth-item h4{font-family:"Fraunces",Georgia,serif;font-size:1.2rem;font-weight:600;line-height:1.25;color:var(--green);margin:0 0 .1rem}
 .booth-city{margin:0;color:var(--muted);font-weight:600}
+.booth-ongoing{margin:.25rem 0 0;color:var(--red);font-weight:800;font-size:.95rem}
+.booth-ongoing-emoji{display:inline-block;animation:booth-wobble 1.2s ease-in-out infinite}
+.booth-ongoing-dot{display:inline-block;animation:booth-blink 1.2s ease-in-out infinite}
+.booth-item.is-ongoing::before{animation:booth-ping 1.6s ease-out infinite}
+@keyframes booth-wobble{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+@keyframes booth-blink{50%{opacity:.3}}
+@keyframes booth-ping{0%{box-shadow:0 0 0 2px var(--red),0 0 0 2px rgba(184,31,45,.55)}100%{box-shadow:0 0 0 2px var(--red),0 0 0 14px rgba(184,31,45,0)}}
+@media (prefers-reduced-motion:reduce){.booth-ongoing-emoji,.booth-ongoing-dot,.booth-item.is-ongoing::before{animation:none}}
+.booth-note{margin:1.6rem 0 0;padding:.7rem .9rem;background:var(--paper);border:2px dashed var(--gold);border-radius:12px;color:var(--muted);font-size:.92rem;line-height:1.5}
+.booth-note strong{color:var(--red)}
+.booth-note a{color:var(--green);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+.booth-note a:hover{color:var(--red)}
 @media (max-width:820px){
   .booths-layout{grid-template-columns:minmax(0,420px);gap:2rem}
   .booths-figure{width:100%;margin-inline:auto}

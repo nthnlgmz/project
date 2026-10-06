@@ -28,7 +28,7 @@
     repeating-linear-gradient(90deg, rgba(155,19,19,.42) 0 14px, transparent 14px 28px),
     #fff;
   /* Fonts: swap these three when the licensed files arrive (see layout.js) */
-  --font-script:"Caveat","Biro Script Plus",cursive;           /* stand-in for Biro Script Plus */
+  --font-script:"Biro Script","Caveat",cursive;
   --font-body:"Hanken Grotesk","Akzidenz-Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; /* stand-in for Akzidenz-Grotesk */
   --font-display:"Michegar",Georgia,serif;                      /* logo wordmark only, the logo is an image */
 }

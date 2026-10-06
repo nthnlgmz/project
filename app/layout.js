@@ -14,7 +14,9 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;700&display=swap" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Hanken+Grotesk:wght@400;600;700;800&display=swap" />
+        {/* TEMP stand-in fonts: Caveat (for Biro Script Plus) and Hanken Grotesk (for Akzidenz-Grotesk).
+            When the licensed font files arrive, load them with next/font/local and update --font-script / --font-body in globals.css. */}
         <link rel="preload" as="image" href="/images/jars-tray.webp" type="image/webp" />
       </head>
       <body>

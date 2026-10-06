@@ -9,8 +9,8 @@ export default function manifest() {
     description: DESCRIPTION,
     start_url: '/',
     display: 'standalone',
-    background_color: '#fbf4e6',
-    theme_color: '#1f4a38',
+    background_color: '#fff6ea',
+    theme_color: '#9b1313',
     icons: [{ src: '/favicon.svg', sizes: 'any', type: 'image/svg+xml' }],
   };
 }

@@ -1,10 +1,15 @@
+import ImageText from './ImageText';
+
 export default function Hero() {
   return (
     <section className="hero" aria-labelledby="hero-title">
       <div className="container hero-grid">
         <div className="hero-copy">
           <p className="eyebrow">Gourmet Palaman &middot; Made in the Philippines</p>
-          <h1 id="hero-title">Fundy's Spread <span>Made with Imported Edam Cheese</span></h1>
+          <h1 id="hero-title">
+            <ImageText text="Fundy's Spread" src="/images/hero-title.png" webp="/images/hero-title.webp" width={1069} height={180} />
+            <span className="hero-sub">Made with Imported Edam Cheese</span>
+          </h1>
           <p className="lead">Fundy's turns imported Edam cheese into creamy, spreadable palaman in four flavors. Pimiento, Spicy Pimiento, Truffle and Basil Pesto, ready for your pandesal, crackers and pasta.</p>
           <div className="cta-row">
             <a className="btn" href="#products">See the Flavors</a>

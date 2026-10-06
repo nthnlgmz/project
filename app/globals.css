@@ -1,8 +1,16 @@
+/* Brand fonts (files live in /public/fonts) */
 @font-face{
   font-family:"Biro Script";
   src:url("/fonts/Biro_Script_reduced.otf") format("opentype"),
       url("/fonts/Biro_Script_reduced.ttf") format("truetype");
   font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
+@font-face{
+  font-family:"Michegar";
+  src:url("/fonts/Michegar.ttf") format("truetype");
+  font-weight:400;
   font-style:normal;
   font-display:swap;
 }
@@ -28,9 +36,13 @@
     repeating-linear-gradient(90deg, rgba(155,19,19,.42) 0 14px, transparent 14px 28px),
     #fff;
   /* Fonts: swap these three when the licensed files arrive (see layout.js) */
-  --font-script:"Biro Script","Caveat",cursive;
+  --font-script:"Biro Script","Caveat",cursive;                 /* Biro Script, Caveat as backup */
   --font-body:"Hanken Grotesk","Akzidenz-Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; /* stand-in for Akzidenz-Grotesk */
-  --font-display:"Michegar",Georgia,serif;                      /* logo wordmark only, the logo is an image */
+  --font-display:"Michegar",Georgia,serif;                      /* "Fundy's Spread" hero title */
+  /* hero title border, adjust here */
+  --h1-fill:var(--butter);
+  --h1-stroke:var(--brown);
+  --h1-stroke-width:7px;
 }
 *,*::before,*::after{box-sizing:border-box}
 *{-webkit-tap-highlight-color:transparent}
@@ -391,3 +403,7 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 .image-heading-img{display:block;width:min(100%,640px);height:auto;margin:0 auto}
 .image-heading-wait{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .products .image-heading{margin-bottom:.5em}
+
+/* Hero title: Michegar with a border, like the logo */
+.hero h1{font-family:var(--font-display);font-weight:400;line-height:1.05;color:var(--h1-fill);-webkit-text-stroke:var(--h1-stroke-width) var(--h1-stroke);paint-order:stroke fill;letter-spacing:.01em}
+.hero h1 span{-webkit-text-stroke:0;color:var(--brown)}

@@ -1,12 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 const VIDEO_SRC = 'https://pxeijseknjnqehrotjqq.supabase.co/storage/v1/object/public/videos/Fundys-Spread.mp4';
 
 export default function StorySection() {
   const videoRef = useRef(null);
-  const [started, setStarted] = useState(false);
 
   // pause the video when it scrolls out of view
   useEffect(() => {
@@ -21,12 +20,6 @@ export default function StorySection() {
     io.observe(v);
     return () => io.disconnect();
   }, []);
-
-  // preload="none": nothing is downloaded until the visitor presses play
-  const play = () => {
-    const v = videoRef.current;
-    if (v) v.play();
-  };
 
   return (
     <section id="about-us" className="story" aria-labelledby="about-title">
@@ -51,7 +44,7 @@ export default function StorySection() {
           <figcaption>Tap the card to see it full size.</figcaption>
         </figure>
 
-        {/* Video: loads only after the visitor taps play. Native controls (timeline seeking); long-press / right-click also lets visitors save it. */}
+        {/* Video: loads only after the visitor taps play (poster is og-image). Native controls (timeline seeking); long-press / right-click also lets visitors save it. */}
         <div
           style={{
             position: 'relative',
@@ -67,40 +60,14 @@ export default function StorySection() {
           <video
             ref={videoRef}
             src={VIDEO_SRC}
+            poster="/images/og-image.jpg"
             preload="none"
             playsInline
             controls
-            onPlay={() => setStarted(true)}
+            controlsList="nodownload"
             aria-label="Fundy's Spread video"
             style={{ width: '100%', height: 'auto', aspectRatio: '9 / 16', objectFit: 'cover', display: 'block', background: '#000' }}
           />
-          {!started && (
-            <button
-              type="button"
-              onClick={play}
-              aria-label="Play video"
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 76,
-                height: 76,
-                borderRadius: '50%',
-                border: '3px solid #fff',
-                background: 'var(--red, #9b1c1c)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: 0,
-              }}
-            >
-              <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true" style={{ fill: '#fff', marginLeft: 4 }}>
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </button>
-          )}
         </div>
       </div>
     </section>

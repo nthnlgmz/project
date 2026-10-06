@@ -2,6 +2,7 @@ import './globals.css';
 import SvgSprite from '../components/SvgSprite';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import ProtectImages from '../components/ProtectImages';
 import { metadata as seoMetadata, viewport as seoViewport } from '../lib/seo';
 
 // Title, description, canonical, Open Graph, Twitter and icons all come from lib/seo.js
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <SvgSprite />
+        <ProtectImages />
         <a className="skip-link" href="#main">Skip to main content</a>
         <Header />
         {children}

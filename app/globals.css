@@ -10,6 +10,7 @@
 @font-face{
   font-family:"Michegar";
   src:url("/fonts/Michegar.ttf") format("truetype");
+  unicode-range:U+0020-007E; /* letters, numbers and basic punctuation only; characters it lacks (curly quotes, en dash) fall back to the next font */
   font-weight:400;
   font-style:normal;
   font-display:swap;
@@ -38,7 +39,7 @@
   /* Fonts: swap these three when the licensed files arrive (see layout.js) */
   --font-script:"Biro Script","Caveat",cursive;                 /* Biro Script, Caveat as backup */
   --font-body:"Hanken Grotesk","Akzidenz-Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; /* stand-in for Akzidenz-Grotesk */
-  --font-display:"Michegar",Georgia,serif;                      /* "Fundy's Spread" hero title */
+  --font-display:"Michegar","Biro Script","Caveat",Georgia,serif;                      /* "Fundy's Spread" hero title */
   /* hero title border, adjust here */
   --h1-fill:var(--butter);
   --h1-stroke:var(--brown);
@@ -158,7 +159,7 @@ section{padding:4rem 0}
 .enjoy{background:var(--paper)}
 .enjoy-grid{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem}
 .enjoy-grid li{background:#fff;border-radius:var(--radius);padding:1.4rem;border:2px dashed var(--butter)}
-.enjoy-grid h3{color:var(--red);font-size:1.7rem}
+.enjoy-grid h3{font-family:var(--font-display);font-weight:400;color:var(--red);font-size:1.3rem;line-height:1.2}
 .enjoy-grid p{margin:0;color:var(--muted)}
 
 /* Serving ideas: all six in one row on large screens (wraps on smaller screens) */
@@ -166,7 +167,7 @@ section{padding:4rem 0}
   .enjoy .container{width:min(1280px,100% - 2rem)}
   .enjoy-grid{grid-template-columns:repeat(6,1fr);gap:1rem}
   .enjoy-grid li{padding:1.1rem}
-  .enjoy-grid h3{font-size:1.5rem}
+  .enjoy-grid h3{font-size:1.1rem}
   .enjoy-grid p{font-size:.92rem;line-height:1.5}
 }
 
@@ -223,7 +224,7 @@ details p{margin:0;color:var(--muted)}
 .booth-item{position:relative;padding:0 0 2rem}
 .booth-item:last-child{padding-bottom:0}
 .booth-item::before{content:"";position:absolute;left:calc(-2rem + 2px);top:.35rem;width:16px;height:16px;border-radius:50%;background:var(--red);border:3px solid var(--cream);box-shadow:0 0 0 2px var(--red)}
-.booth-date{font-family:var(--font-script);font-weight:700;font-size:2rem;line-height:1.1;color:var(--red);margin:0 0 .15rem}
+.booth-date{font-family:var(--font-display);font-weight:400;font-size:1.5rem;line-height:1.15;color:var(--red);margin:0 0 .25rem}
 .booth-item h4{font-family:var(--font-script);font-size:1.7rem;font-weight:700;line-height:1.25;color:var(--brown);margin:0 0 .1rem}
 .booth-city{margin:0;color:var(--muted);font-weight:600}
 .booth-ongoing{margin:.25rem 0 0;color:var(--red);font-weight:800;font-size:.95rem}
@@ -413,3 +414,6 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 .image-text-img{display:block;width:min(100%,560px);height:auto}
 .image-text-wait{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .hero h1 .image-text + .hero-sub{margin-top:.9rem;font-size:clamp(1rem,2.4vw,1.35rem)}
+
+/* Images: no drag, no long-press save menu on phones */
+img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}

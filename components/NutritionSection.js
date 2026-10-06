@@ -11,8 +11,7 @@ export default function NutritionSection() {
         </header>
         <div className="nf-grid">
           {NUTRITION.map((n) => (
-            <figure className="nf-card" key={n.flavors.join('-')}>
-              <figcaption className="nf-for">{n.title || n.flavors.join(' & ')}</figcaption>
+            <figure className="nf-card" key={n.serving}>
               <table className="nf-label">
                 <caption>Nutrition Facts</caption>
                 <tbody>

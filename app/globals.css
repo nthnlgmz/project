@@ -1,3 +1,11 @@
+@font-face{
+  font-family:"Biro Script";
+  src:url("/fonts/Biro_Script_reduced.otf") format("opentype"),
+      url("/fonts/Biro_Script_reduced.ttf") format("truetype");
+  font-weight:100 900;
+  font-style:normal;
+  font-display:swap;
+}
 :root{
   /* Fundy's brand kit (from the owner's Canva) */
   --red:#9b1313;

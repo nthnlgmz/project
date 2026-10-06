@@ -156,7 +156,6 @@ section{padding:4rem 0}
 .feature-list li::marker{color:var(--red)}
 
 /* Enjoy (Serving ideas) */
-.enjoy{background:var(--red)}
 .enjoy-grid{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem}
 .enjoy-grid li{background:#fff;border-radius:var(--radius);padding:1.4rem;border:2px dashed var(--butter)}
 .enjoy-grid h3{font-family:var(--font-display);font-weight:400;color:var(--red);font-size:1.3rem;line-height:1.2}
@@ -212,7 +211,6 @@ details p{margin:0;color:var(--muted)}
 .buy-row--single .btn{flex:1}
 
 /* Upcoming booths */
-.booths{background:var(--butter)}
 .booths-layout{display:grid;grid-template-columns:minmax(0,380px) minmax(0,460px);gap:4rem;align-items:center;justify-content:center}
 .booths-figure{margin:0}
 .booths-figure img{width:100%;border-radius:var(--radius);box-shadow:var(--shadow);aspect-ratio:4/5;object-fit:cover;object-position:center top}
@@ -360,7 +358,7 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 .stripe-band{height:18px;background:var(--stripes)}
 
 /* Our story: the owner's card image, shown as is */
-.story{background:var(--brown);padding:3rem 0}
+.story{padding:3rem 0}
 .story-figure{margin:0 auto;max-width:960px}
 .story-figure a{display:block;border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
 .story-figure img{width:100%;height:auto;display:block}
@@ -387,7 +385,6 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 .contact .btn:not(.btn-whatsapp):hover{background:#fff}
 
 /* Nutrition facts */
-.nutrition{background:var(--butter)}
 .nf-grid{display:flex;flex-wrap:wrap;gap:1.6rem;justify-content:center}
 .nf-card{margin:0;width:min(340px,100%)}
 .nf-label{width:100%;border-collapse:collapse;background:#fff;color:#111;border:2px solid #111;padding:.5rem;font-size:.95rem}
@@ -418,20 +415,39 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 /* Images: no drag, no long-press save menu on phones */
 img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 
-/* ===== Section colors (page rhythm) =====
-   hero gingham, products red, nutrition butter, why cream, about brown,
-   ways to enjoy red, where to buy gingham, booths butter, FAQ cream, contact red, footer dark brown */
-.why,.faq{background:var(--cream)}
+/* ===== Section colors: only red (the "Get in Touch" gradient) and gingham; the footer is the only brown =====
+   hero gingham | products RED | nutrition gingham | why RED | about gingham |
+   ways to enjoy RED | where to buy gingham | booths RED | FAQ gingham | contact RED | footer brown */
 
-/* About Us on brown */
-.story .eyebrow,.story h2{color:var(--butter)}
-.story-figure a{box-shadow:0 12px 32px rgba(0,0,0,.35)}
-.story-figure figcaption{color:var(--cream)}
+/* Gingham sections (hero and where-to-buy already have it) */
+.nutrition,.story,.faq{background:var(--gingham);position:relative}
+.nutrition::before,.story::before,.faq::before{content:"";position:absolute;inset:0;background:rgba(255,246,234,.9);pointer-events:none}
+.nutrition > *,.story > *,.faq > *{position:relative}
 
-/* Ways to Enjoy on red */
-.enjoy .eyebrow,.enjoy .section-head h2{color:var(--butter)}
+/* Red sections: same gradient as Get in Touch */
+.products,.enjoy,.why,.booths{background:var(--grad);color:var(--cream)}
+.products h2,.enjoy h2,.why h2,.booths h2,
+.products .eyebrow,.enjoy .eyebrow,.why .eyebrow,.booths .eyebrow{color:var(--butter)}
 .enjoy .section-head p{color:var(--cream)}
 .enjoy .storage{border-color:var(--butter)}
 
-/* Booths on butter */
-.booths .booth-note{border-color:rgba(114,55,32,.35);background:rgba(255,255,255,.55)}
+/* Why Fundy's on red */
+.why strong{color:var(--butter)}
+.why .feature-list li::marker{color:var(--butter)}
+.why-figure img{box-shadow:0 12px 32px rgba(74,36,18,.45)}
+
+/* Booths on red */
+.booths-figure img{box-shadow:0 12px 32px rgba(74,36,18,.45)}
+.booths-figure figcaption{color:var(--cream)}
+.booths .booth-timeline::before{background:var(--butter);opacity:.5}
+.booths .booth-item::before{background:var(--butter);border-color:var(--red);box-shadow:0 0 0 2px var(--butter)}
+.booths .booth-date{color:var(--butter)}
+.booths .booth-item h4{color:var(--cream)}
+.booths .booth-city{color:rgba(255,246,234,.85)}
+.booths .booth-ongoing{color:var(--butter)}
+.booths .booth-item.is-ongoing::before{animation-name:booth-ping-light}
+@keyframes booth-ping-light{0%{box-shadow:0 0 0 2px var(--butter),0 0 0 2px rgba(255,249,199,.6)}100%{box-shadow:0 0 0 2px var(--butter),0 0 0 14px rgba(255,249,199,0)}}
+.booths .booth-note{background:rgba(255,255,255,.12);border-color:rgba(255,249,199,.6);color:var(--cream)}
+.booths .booth-note strong,.booths .booth-note a{color:var(--butter)}
+.booths .booth-empty{color:var(--cream)}
+.booths .booth-empty h3{color:var(--butter)}

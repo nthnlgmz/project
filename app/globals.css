@@ -156,7 +156,7 @@ section{padding:4rem 0}
 .feature-list li::marker{color:var(--red)}
 
 /* Enjoy (Serving ideas) */
-.enjoy{background:var(--paper)}
+.enjoy{background:var(--red)}
 .enjoy-grid{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem}
 .enjoy-grid li{background:#fff;border-radius:var(--radius);padding:1.4rem;border:2px dashed var(--butter)}
 .enjoy-grid h3{font-family:var(--font-display);font-weight:400;color:var(--red);font-size:1.3rem;line-height:1.2}
@@ -212,7 +212,7 @@ details p{margin:0;color:var(--muted)}
 .buy-row--single .btn{flex:1}
 
 /* Upcoming booths */
-.booths{background:var(--cream)}
+.booths{background:var(--butter)}
 .booths-layout{display:grid;grid-template-columns:minmax(0,380px) minmax(0,460px);gap:4rem;align-items:center;justify-content:center}
 .booths-figure{margin:0}
 .booths-figure img{width:100%;border-radius:var(--radius);box-shadow:var(--shadow);aspect-ratio:4/5;object-fit:cover;object-position:center top}
@@ -360,7 +360,7 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 .stripe-band{height:18px;background:var(--stripes)}
 
 /* Our story: the owner's card image, shown as is */
-.story{background:var(--cream);padding:3rem 0}
+.story{background:var(--brown);padding:3rem 0}
 .story-figure{margin:0 auto;max-width:960px}
 .story-figure a{display:block;border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
 .story-figure img{width:100%;height:auto;display:block}
@@ -387,7 +387,7 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 .contact .btn:not(.btn-whatsapp):hover{background:#fff}
 
 /* Nutrition facts */
-.nutrition{background:var(--cream)}
+.nutrition{background:var(--butter)}
 .nf-grid{display:flex;flex-wrap:wrap;gap:1.6rem;justify-content:center}
 .nf-card{margin:0;width:min(340px,100%)}
 .nf-label{width:100%;border-collapse:collapse;background:#fff;color:#111;border:2px solid #111;padding:.5rem;font-size:.95rem}
@@ -418,32 +418,20 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 /* Images: no drag, no long-press save menu on phones */
 img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 
-/* ===== Animations (all switched off for visitors who prefer reduced motion) ===== */
-@media (prefers-reduced-motion:no-preference){
-  @keyframes fade-up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
-  @keyframes pop-in{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
-  @keyframes wheel-in{from{opacity:0;transform:translateY(34px) rotate(-14deg) scale(.8)}to{opacity:1;transform:rotate(-4deg)}}
-  @keyframes wheel-float{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(-4deg) translateY(-9px)}}
+/* ===== Section colors (page rhythm) =====
+   hero gingham, products red, nutrition butter, why cream, about brown,
+   ways to enjoy red, where to buy gingham, booths butter, FAQ cream, contact red, footer dark brown */
+.why,.faq{background:var(--cream)}
 
-  /* Hero: plays once on load */
-  .hero-copy > *{animation:fade-up .8s ease both}
-  .hero-copy > .eyebrow{animation-delay:.05s}
-  .hero-copy > h1{animation-delay:.15s}
-  .hero-copy > .lead{animation-delay:.3s}
-  .hero-copy > .cta-row{animation-delay:.45s}
-  .hero-media .hero-figure{animation:pop-in .7s .1s ease both}
-  .hero-wheel{animation:wheel-in .9s .5s cubic-bezier(.2,.9,.3,1.15) both,wheel-float 6s 1.6s ease-in-out infinite}
+/* About Us on brown */
+.story .eyebrow,.story h2{color:var(--butter)}
+.story-figure a{box-shadow:0 12px 32px rgba(0,0,0,.35)}
+.story-figure figcaption{color:var(--cream)}
 
-  /* Everything below the hero: reveals on scroll (classes are added by ScrollReveal.js) */
-  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
-  figure.reveal{transform:translateY(26px) scale(.96)}
-  .reveal.is-visible,figure.reveal.is-visible{opacity:1;transform:none}
+/* Ways to Enjoy on red */
+.enjoy .eyebrow,.enjoy .section-head h2{color:var(--butter)}
+.enjoy .section-head p{color:var(--cream)}
+.enjoy .storage{border-color:var(--butter)}
 
-  /* Hover lifts */
-  .product-card,.enjoy-grid li,.nf-card{transition:transform .25s ease,box-shadow .25s ease}
-  .product-card:hover{transform:translateY(-4px)}
-  .enjoy-grid li:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
-  .story-figure a,.hero-figure img,.why-figure img,.shop-figure img,.booths-figure img{transition:transform .5s ease}
-  .why-figure,.shop-figure,.booths-figure{overflow:hidden;border-radius:var(--radius)}
-  .why-figure:hover img,.shop-figure:hover img,.booths-figure:hover img{transform:scale(1.03)}
-}
+/* Booths on butter */
+.booths .booth-note{border-color:rgba(114,55,32,.35);background:rgba(255,255,255,.55)}

@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="container footer-inner">
         <div>
-          <a className="logo" href="/" aria-label="Fundy's home"><img src="/images/logo-pill.webp" width="839" height="339" alt="Fundy's" /></a>
+          <a className="logo" href="/" aria-label="Fundy's home"><img src="/images/logo-pill-light.webp" width="778" height="316" alt="Fundy's" /></a>
           <p>Fundy's Spread made with Imported Edam Cheese.</p>
           <p className="footer-contact">
             <a href="tel:+639666930825" aria-label="Call Fundy's"><svg className="icon" aria-hidden="true"><use href="#i-phone" /></svg></a>

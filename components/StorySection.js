@@ -1,8 +1,11 @@
 export default function StorySection() {
   return (
-    <section id="our-story" className="story" aria-labelledby="story-title">
+    <section id="about-us" className="story" aria-labelledby="about-title">
       <div className="container">
-        <h2 id="story-title" className="sr-only">Our Story</h2>
+        <header className="section-head">
+          <p className="eyebrow">Our Story</p>
+          <h2 id="about-title">About Us</h2>
+        </header>
         <figure className="story-figure">
           {/* Tap or click opens the full-size card, so the handwriting is easy to read on phones */}
           <a href="/images/our-story.jpg" target="_blank" rel="noopener" aria-label="Open the Fundy's story card full size">
@@ -21,4 +24,4 @@ export default function StorySection() {
       </div>
     </section>
   );
-    }
+}

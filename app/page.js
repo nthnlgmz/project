@@ -3,6 +3,7 @@ import ProductsSection from '../components/ProductsSection';
 import WhySection from '../components/WhySection';
 import EnjoySection from '../components/EnjoySection';
 import StorySection from '../components/StorySection';
+import NutritionSection from '../components/NutritionSection';
 import ShopSection from '../components/ShopSection';
 import BoothsSection from '../components/BoothsSection';
 import FaqSection from '../components/FaqSection';
@@ -31,6 +32,7 @@ export default async function Home() {
         <WhySection />
         <StorySection />
         <EnjoySection />
+        <NutritionSection />
         <ShopSection />
         <BoothsSection booths={booths} />
         <FaqSection />

@@ -49,7 +49,7 @@ export default function StorySection() {
           style={{
             position: 'relative',
             margin: '2rem auto 0',
-            maxWidth: 960,
+            maxWidth: 420,
             borderRadius: 8,
             overflow: 'hidden',
             boxShadow: 'var(--shadow)',
@@ -67,7 +67,7 @@ export default function StorySection() {
             onEnded={() => setPlaying(false)}
             onClick={toggle}
             aria-label="Fundy's Spread video"
-            style={{ width: '100%', height: 'auto', aspectRatio: '16 / 9', objectFit: 'contain', display: 'block', cursor: 'pointer', background: '#000' }}
+            style={{ width: '100%', height: 'auto', aspectRatio: '9 / 16', objectFit: 'cover', display: 'block', cursor: 'pointer', background: '#000' }}
           />
           {!playing && (
             <button
@@ -100,4 +100,4 @@ export default function StorySection() {
       </div>
     </section>
   );
-              }
+}

@@ -1,24 +1,31 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const VIDEO_SRC = 'https://pxeijseknjnqehrotjqq.supabase.co/storage/v1/object/public/videos/Fundys-Spread.mp4';
 
 export default function StorySection() {
   const videoRef = useRef(null);
-  const [playing, setPlaying] = useState(false);
+  const [started, setStarted] = useState(false);
+
+  // pause the video when it scrolls out of view
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v || typeof IntersectionObserver === 'undefined') return undefined;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting && !v.paused) v.pause();
+      },
+      { threshold: 0.2 }
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
 
   // preload="none": nothing is downloaded until the visitor presses play
   const play = () => {
     const v = videoRef.current;
     if (v) v.play();
-  };
-
-  const toggle = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (v.paused) v.play();
-    else v.pause();
   };
 
   return (
@@ -44,7 +51,7 @@ export default function StorySection() {
           <figcaption>Tap the card to see it full size.</figcaption>
         </figure>
 
-        {/* Video: loads only after the visitor taps play. No controls, so right-click / long-press "Save video as" is the way to download. */}
+        {/* Video: loads only after the visitor taps play. Native controls (timeline seeking); long-press / right-click also lets visitors save it. */}
         <div
           style={{
             position: 'relative',
@@ -62,14 +69,12 @@ export default function StorySection() {
             src={VIDEO_SRC}
             preload="none"
             playsInline
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
-            onEnded={() => setPlaying(false)}
-            onClick={toggle}
+            controls
+            onPlay={() => setStarted(true)}
             aria-label="Fundy's Spread video"
-            style={{ width: '100%', height: 'auto', aspectRatio: '9 / 16', objectFit: 'cover', display: 'block', cursor: 'pointer', background: '#000' }}
+            style={{ width: '100%', height: 'auto', aspectRatio: '9 / 16', objectFit: 'cover', display: 'block', background: '#000' }}
           />
-          {!playing && (
+          {!started && (
             <button
               type="button"
               onClick={play}

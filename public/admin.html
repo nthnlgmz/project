@@ -505,8 +505,10 @@
     var list = C.sortBooths(state.booths).filter(function (b) { return !C.isPast(b); });   // finished booths drop off automatically
     $('boothList').innerHTML = list.length ? list.map(function (b) {
       var past = C.isPast(b);
+      var today = C.todayDate(), st = C.parseDate(b.start);
+      var live = !past && !!st && st <= today;   // today falls between the first and last day
       return '<li class="row' + (past ? ' past' : '') + '"><div class="grow"><strong>' + C.esc(C.formatRange(b.start, b.end)) +
-        '<span class="chip' + (past ? ' grey' : '') + '">' + (past ? 'Past' : 'Upcoming') + '</span></strong>' +
+        '<span class="chip' + (past ? ' grey' : live ? ' red' : '') + '">' + (past ? 'Past' : live ? 'Ongoing' : 'Upcoming') + '</span></strong>' +
         '<span>' + C.esc(b.name) + '</span> <span class="meta">&middot; ' + C.esc(b.city) + '</span></div>' +
         actions([
           { act: 'edit-booth', id: b.id, label: 'Edit' },

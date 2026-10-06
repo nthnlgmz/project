@@ -29,10 +29,10 @@ export default async function Home() {
       <main id="main">
         <Hero />
         <ProductsSection products={products} />
+        <NutritionSection />
         <WhySection />
         <StorySection />
         <EnjoySection />
-        <NutritionSection />
         <ShopSection />
         <BoothsSection booths={booths} />
         <FaqSection />

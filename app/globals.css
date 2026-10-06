@@ -15,6 +15,10 @@
   --shadow:0 10px 30px rgba(114,55,32,.18);
   --grad:linear-gradient(90deg,#920000,#bf4949);
   --stripes:repeating-linear-gradient(90deg,var(--red) 0 26px,var(--cream) 26px 52px);
+  --gingham:
+    repeating-linear-gradient(0deg, rgba(155,19,19,.42) 0 14px, transparent 14px 28px),
+    repeating-linear-gradient(90deg, rgba(155,19,19,.42) 0 14px, transparent 14px 28px),
+    #fff;
   /* Fonts: swap these three when the licensed files arrive (see layout.js) */
   --font-script:"Caveat","Biro Script Plus",cursive;           /* stand-in for Biro Script Plus */
   --font-body:"Hanken Grotesk","Akzidenz-Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; /* stand-in for Akzidenz-Grotesk */
@@ -63,7 +67,7 @@ a{color:var(--red)}
 .cta-row{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1.4rem}
 
 /* Hero */
-.hero{background:var(--stripes);background-size:auto;position:relative;padding:3.5rem 0}
+.hero{background:var(--gingham);background-size:auto;position:relative;padding:3.5rem 0}
 .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,246,234,.82),rgba(255,246,234,.92))}
 .hero-grid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:2.5rem;align-items:center}
 .eyebrow{font-family:var(--font-body);text-transform:uppercase;letter-spacing:.14em;font-weight:700;font-size:.8rem;color:var(--red);margin-bottom:.8em}
@@ -82,8 +86,6 @@ section{padding:4rem 0}
 
 /* Slider */
 .products{background:var(--red);color:var(--cream);position:relative;overflow:hidden}
-.products::before,.products::after{content:"";position:absolute;left:0;right:0;height:14px;background:var(--stripes);opacity:.9}
-.products::before{top:0}.products::after{bottom:0}
 .products h2{color:var(--butter)}
 .products .eyebrow{color:var(--butter)}
 .slider{position:relative}
@@ -149,7 +151,7 @@ section{padding:4rem 0}
 }
 
 /* Shop */
-.shop{background:var(--stripes);position:relative}
+.shop{background:var(--gingham);position:relative}
 .shop::before{content:"";position:absolute;inset:0;background:rgba(255,246,234,.9)}
 .shop-grid{position:relative;grid-template-columns:1.2fr .8fr}
 .shop-figure figcaption{text-align:center;font-size:.9rem;color:var(--muted);margin-top:.6rem}
@@ -311,7 +313,7 @@ details p{margin:0;color:var(--muted)}
 
 /* Footer always sits at the bottom, and short pages (like the 404) fill the screen between header and footer */
 body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
-.not-found{flex:1;display:grid;place-items:center;text-align:center;padding:1rem;position:relative;background:var(--stripes)}
+.not-found{flex:1;display:grid;place-items:center;text-align:center;padding:1rem;position:relative;background:var(--gingham)}
 .not-found::before{content:"";position:absolute;inset:0;background:rgba(255,246,234,.92)}
 .not-found-inner{position:relative;max-width:34rem}
 .not-found-code{font-family:var(--font-script);font-weight:800;font-size:clamp(3.6rem,min(20vw,13vh),8rem);line-height:1;color:var(--red);margin:0 0 .1em}
@@ -322,8 +324,6 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 
 
 /* ===== Redesign layer: brand kit ===== */
-.hero{background:var(--cream)}
-.hero::before{background:var(--stripes);opacity:.07}
 .hero-media{position:relative}
 .hero-figure img{border:6px solid var(--butter);outline:3px solid var(--brown);outline-offset:-3px}
 .hero-wheel{position:absolute;left:-14%;bottom:-6%;width:56%;max-width:300px;height:auto;filter:drop-shadow(0 12px 18px rgba(74,36,18,.28));transform:rotate(-4deg);pointer-events:none}

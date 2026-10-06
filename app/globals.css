@@ -417,3 +417,33 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 
 /* Images: no drag, no long-press save menu on phones */
 img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+
+/* ===== Animations (all switched off for visitors who prefer reduced motion) ===== */
+@media (prefers-reduced-motion:no-preference){
+  @keyframes fade-up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+  @keyframes pop-in{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
+  @keyframes wheel-in{from{opacity:0;transform:translateY(34px) rotate(-14deg) scale(.8)}to{opacity:1;transform:rotate(-4deg)}}
+  @keyframes wheel-float{0%,100%{transform:rotate(-4deg) translateY(0)}50%{transform:rotate(-4deg) translateY(-9px)}}
+
+  /* Hero: plays once on load */
+  .hero-copy > *{animation:fade-up .8s ease both}
+  .hero-copy > .eyebrow{animation-delay:.05s}
+  .hero-copy > h1{animation-delay:.15s}
+  .hero-copy > .lead{animation-delay:.3s}
+  .hero-copy > .cta-row{animation-delay:.45s}
+  .hero-media .hero-figure{animation:pop-in .7s .1s ease both}
+  .hero-wheel{animation:wheel-in .9s .5s cubic-bezier(.2,.9,.3,1.15) both,wheel-float 6s 1.6s ease-in-out infinite}
+
+  /* Everything below the hero: reveals on scroll (classes are added by ScrollReveal.js) */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+  figure.reveal{transform:translateY(26px) scale(.96)}
+  .reveal.is-visible,figure.reveal.is-visible{opacity:1;transform:none}
+
+  /* Hover lifts */
+  .product-card,.enjoy-grid li,.nf-card{transition:transform .25s ease,box-shadow .25s ease}
+  .product-card:hover{transform:translateY(-4px)}
+  .enjoy-grid li:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  .story-figure a,.hero-figure img,.why-figure img,.shop-figure img,.booths-figure img{transition:transform .5s ease}
+  .why-figure,.shop-figure,.booths-figure{overflow:hidden;border-radius:var(--radius)}
+  .why-figure:hover img,.shop-figure:hover img,.booths-figure:hover img{transform:scale(1.03)}
+}

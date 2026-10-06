@@ -51,7 +51,7 @@ body{margin:0;font-family:var(--font-body);color:var(--ink);background:var(--cre
 img{max-width:100%;height:auto;display:block}
 h1,h2,h3{font-family:var(--font-script);line-height:1.05;color:var(--red);margin:0 0 .35em;font-weight:700}
 h1{font-size:clamp(3.2rem,8vw,5.6rem);font-weight:700}
-h1 span{display:block;font-family:var(--font-body);font-size:.3em;font-weight:600;color:var(--brown);margin-top:.6em;letter-spacing:.01em;line-height:1.3}
+h1 .hero-sub{display:block;font-family:var(--font-body);font-size:.3em;font-weight:600;color:var(--brown);margin-top:.6em;letter-spacing:.01em;line-height:1.3}
 h2{font-size:clamp(2.3rem,5.4vw,3.5rem);font-weight:700}
 h3{font-size:1.9rem;font-weight:700}
 p{margin:0 0 1em}
@@ -406,4 +406,10 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 
 /* Hero title: Michegar with a border, like the logo */
 .hero h1{font-family:var(--font-display);font-weight:400;line-height:1.05;color:var(--h1-fill);-webkit-text-stroke:var(--h1-stroke-width) var(--h1-stroke);paint-order:stroke fill;letter-spacing:.01em}
-.hero h1 span{-webkit-text-stroke:0;color:var(--brown)}
+.hero h1 .hero-sub{-webkit-text-stroke:0;color:var(--brown);paint-order:normal;letter-spacing:.01em}
+
+/* Hero title image (text is the backup) */
+.image-text{display:block}
+.image-text-img{display:block;width:min(100%,560px);height:auto}
+.image-text-wait{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.hero h1 .image-text + .hero-sub{margin-top:.9rem;font-size:clamp(1rem,2.4vw,1.35rem)}

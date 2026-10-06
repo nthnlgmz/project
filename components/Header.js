@@ -6,6 +6,7 @@ const LINKS = [
   { href: '#products', label: 'Products' },
   { href: '#why-fundys', label: "Why Fundy's" },
   { href: '#ways-to-enjoy', label: 'Ways to Enjoy' },
+  { href: '#nutrition', label: 'Nutrition' },
   { href: '#faq', label: 'FAQ' },
   { href: '#contact', label: 'Contact' },
 ];

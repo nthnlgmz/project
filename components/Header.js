@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 
 const LINKS = [
   { href: '#products', label: 'Products' },
-  { href: '#why-fundys', label: "Why Fundy's" },
-  { href: '#ways-to-enjoy', label: 'Ways to Enjoy' },
   { href: '#nutrition', label: 'Nutrition' },
+  { href: '#our-story', label: 'Our Story' },
+  { href: '#ways-to-enjoy', label: 'Ways to Enjoy' },
+  { href: '#booths', label: 'Booths' },
   { href: '#faq', label: 'FAQ' },
   { href: '#contact', label: 'Contact' },
 ];

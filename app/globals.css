@@ -378,3 +378,8 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 .nf-label .nf-amount th{font-size:.78rem;font-weight:700;border-top:0;border-bottom:2px solid #111;padding-block:.2rem}
 .nf-label .nf-indent th{padding-left:1.8rem}
 .nf-foot{font-size:.78rem;color:var(--muted);margin:.6rem 0 0;line-height:1.4}
+
+/* Heading drawn as an image, with the text as backup */
+.image-heading-img{display:block;width:min(100%,640px);height:auto;margin:0 auto}
+.image-heading-wait{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.products .image-heading{margin-bottom:.5em}

@@ -459,9 +459,12 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .footer-contact a:hover{background:var(--brown-dark);color:var(--cream)}
 .footer-contact .icon{width:1.4rem;height:1.4rem}
 .footer-cols .copyright{font-size:.9rem;color:var(--brown-dark);margin:.9rem 0 0}
+.footer-cols .copyright-desk{display:none}
 @media (min-width:800px){
   .footer-cols{grid-template-columns:1fr 1fr 1fr;gap:2rem}
   .footer-address{text-align:left}
   .footer-address .footer-contact{justify-content:flex-start}
   .footer-blurb{text-align:center}
+  .footer-cols .copyright-desk{display:block}
+  .footer-cols .copyright-mob{display:none}
 }

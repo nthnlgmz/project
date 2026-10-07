@@ -256,8 +256,9 @@ details p{margin:0;color:var(--muted)}
 .contact{background:var(--grad);color:var(--cream);text-align:center}
 .contact h2{color:var(--butter)}
 .contact .eyebrow{color:var(--butter)}
-.btn-whatsapp{background:#1f8f4e;border-color:#1f8f4e}
-.btn-whatsapp:hover{background:#176d3b}
+/* WhatsApp: outlined butter button, so it stays in the brand palette (the Call button is the filled one) */
+.btn-whatsapp,.contact .btn-whatsapp{background:transparent;border-color:var(--butter);color:var(--butter)!important}
+.btn-whatsapp:hover,.contact .btn-whatsapp:hover{background:var(--butter);color:var(--red)!important}
 .footer-contact a{color:var(--butter)}
 
 /* Video review (used once the video snippet is added) */

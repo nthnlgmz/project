@@ -24,25 +24,54 @@ export default function StorySection() {
   return (
     <section id="about-us" className="story" aria-labelledby="about-title">
       <div className="container">
-        <header className="section-head">
+        <header className="section-head" style={{ marginBottom: 0 }}>
           <p className="eyebrow">Our Story</p>
-          <h2 id="about-title">About Us</h2>
+          <h2 id="about-title" className="sr-only">About Us</h2>
         </header>
-        <figure className="story-figure">
-          {/* Tap or click opens the full-size card, so the handwriting is easy to read on phones */}
-          <a href="/images/our-story.jpg" target="_blank" rel="noopener" aria-label="Open the Fundy's story card full size">
-            <picture>
-              <source srcSet="/images/our-story.webp" type="image/webp" />
-              <img src="/images/our-story.jpg" width="1110" height="808" loading="lazy" alt="Fundy's story card: Fundy's Spreads is a small business born from a home kitchen in Quezon Province. Our goal is to extend the feeling of Christmas beyond the holidays." />
-            </picture>
-          </a>
-          <div className="sr-only">
-            <p>Fundy's Spreads is a small business born from a home kitchen in Quezon Province.</p>
-            <p>Our goal is simple: to extend the feeling of Christmas beyond the holidays. For many Filipinos, queso de bola is more than just cheese. It's part of the Christmas we grew up with. The red wax on the holiday table, family gathered around, and that familiar feeling of knowing it's finally Christmas.</p>
-            <p>We wanted to bring that childhood feeling into something you can enjoy anytime. We reimagined queso de bola into approachable, familiar flavors made for the Filipino palate, bringing a little taste of those Christmas memories into every spread.</p>
+
+        {/* Team photo with a large faded "ABOUT US" behind them (text-behind-subject effect) */}
+        <div style={{ position: 'relative', maxWidth: 720, margin: '0 auto' }}>
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              top: '6%',
+              left: 0,
+              right: 0,
+              textAlign: 'center',
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(3.4rem, 17vw, 9rem)',
+              lineHeight: 1,
+              letterSpacing: '.04em',
+              whiteSpace: 'nowrap',
+              color: 'var(--red)',
+              opacity: 0.14,
+              userSelect: 'none',
+              pointerEvents: 'none',
+            }}
+          >
+            ABOUT US
           </div>
-          <figcaption>Tap the card to see it full size.</figcaption>
-        </figure>
+          <img
+            src="/images/story-team.webp"
+            width="1400"
+            height="1072"
+            alt="The Fundy's team holding a Fundy's gift box and jars of cheese spread"
+            style={{ position: 'relative', display: 'block', width: '100%', height: 'auto' }}
+          />
+        </div>
+
+        <div style={{ maxWidth: '38rem', margin: '1.5rem auto 0', textAlign: 'center' }}>
+          <p style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--red)' }}>
+            Fundy&rsquo;s Spreads is a small business born from a home kitchen in Quezon Province.
+          </p>
+          <p>
+            Our goal is simple &mdash; to extend the feeling of Christmas beyond the holidays. For many Filipinos, queso de bola is more than just cheese. It&rsquo;s part of the Christmas we grew up with. The red wax on the holiday table, family gathered around, and that familiar feeling of knowing it&rsquo;s finally Christmas.
+          </p>
+          <p>
+            We wanted to bring that childhood feeling into something you can enjoy anytime. We reimagined queso de bola into approachable, familiar flavors made for the Filipino palate, bringing a little taste of those Christmas memories into every spread.
+          </p>
+        </div>
 
         {/* Video: loads only after the visitor taps play (poster is og-image). Native controls (timeline seeking); long-press / right-click also lets visitors save it. */}
         <div

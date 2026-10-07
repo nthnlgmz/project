@@ -24,20 +24,22 @@ export default function Footer() {
             </p>
           </div>
 
-          <nav className="footer-col footer-find" aria-label="Footer">
+          <div className="footer-col footer-find">
             <p className="footer-script" aria-hidden="true">Find Us</p>
-            <ul>
-              <li><a href="https://ph.shp.ee/pDAPXb2F" rel="noopener me" target="_blank">Shopee</a></li>
-              <li><a href="https://vt.tiktok.com/ZS9DhRoY41tqs-isnu7/" rel="noopener me" target="_blank">TikTok</a></li>
-              <li><a href="https://www.facebook.com/share/1P3eAZ63ca/" rel="noopener me" target="_blank">Facebook</a></li>
-            </ul>
-          </nav>
+            <nav aria-label="Footer">
+              <ul>
+                <li><a href="https://ph.shp.ee/pDAPXb2F" rel="noopener me" target="_blank">Shopee</a></li>
+                <li><a href="https://vt.tiktok.com/ZS9DhRoY41tqs-isnu7/" rel="noopener me" target="_blank">TikTok</a></li>
+                <li><a href="https://www.facebook.com/share/1P3eAZ63ca/" rel="noopener me" target="_blank">Facebook</a></li>
+              </ul>
+            </nav>
+            <p className="copyright">&copy; <Year initial={new Date().getFullYear()} /> Fundy's. All rights reserved.</p>
+          </div>
 
           <div className="footer-col footer-blurb">
             <p>Made with real Edam Cheese imported from the Netherlands. Perfect on crackers, toasted bread, or as a dip with chips.</p>
           </div>
         </div>
-        <p className="copyright">&copy; <Year initial={new Date().getFullYear()} /> Fundy's. All rights reserved.</p>
       </div>
     </footer>
   );

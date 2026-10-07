@@ -70,7 +70,7 @@ a{color:var(--red)}
 /* Header */
 .site-header{position:sticky;top:0;z-index:50;background:rgba(255,246,234,.95);backdrop-filter:blur(8px);border-bottom:4px solid var(--red)}
 .header-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.6rem 0}
-.primary-nav ul,.footer-inner ul{list-style:none;margin:0;padding:0;display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap}
+.primary-nav ul,.footer-cols ul{list-style:none;margin:0;padding:0;display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap}
 .primary-nav a{text-decoration:none;color:var(--brown);font-weight:700}
 .primary-nav a.btn{color:#fff}
 .primary-nav a:hover{color:var(--red)}
@@ -183,11 +183,6 @@ details[open] summary{color:var(--red);margin-bottom:.5rem}
 details p{margin:0;color:var(--muted)}
 
 /* Footer */
-.site-footer{background:var(--brown-dark);color:var(--cream);padding:2.5rem 0 1.5rem}
-.footer-inner{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap}
-.footer-inner p{margin:.6rem 0 0}
-.footer-inner a:not(.logo){color:var(--butter)}
-.copyright{text-align:center;font-size:.85rem;opacity:.8;margin:2rem 0 0;padding-inline:1rem}
 
 /* Responsive */
 @media (max-width:820px){
@@ -259,7 +254,6 @@ details p{margin:0;color:var(--muted)}
 /* WhatsApp: outlined butter button, so it stays in the brand palette (the Call button is the filled one) */
 .btn-whatsapp,.contact .btn-whatsapp{background:transparent;border-color:var(--butter);color:var(--butter)!important}
 .btn-whatsapp:hover,.contact .btn-whatsapp:hover{background:var(--butter);color:var(--red)!important}
-.footer-contact a{color:var(--butter)}
 
 /* Video review (used once the video snippet is added) */
 .video-wrap{margin:0}
@@ -302,10 +296,6 @@ details p{margin:0;color:var(--muted)}
 @media (prefers-reduced-motion:reduce){.booth-banner{animation:none}}
 
 /* Footer: phone and WhatsApp as icons */
-.footer-contact{display:flex;gap:.6rem;flex-wrap:wrap}
-.footer-contact a{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;border:2px solid var(--butter);color:var(--butter);transition:background .15s,color .15s}
-.footer-contact a:hover{background:var(--butter);color:var(--brown-dark)}
-.footer-contact .icon{width:1.4rem;height:1.4rem}
 
 /* Header: burger menu, logo and shopping cart on small screens */
 .nav-toggle,.cart-link{display:none}
@@ -377,10 +367,6 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 .storage p:last-child{margin-bottom:0}
 
 /* Footer with pill logo */
-.site-footer .logo img{height:50px}
-.footer-inner a:not(.logo){color:var(--butter)}
-.footer-contact a{border-color:var(--butter);color:var(--butter)}
-.footer-contact a:hover{background:var(--butter);color:var(--brown-dark)}
 .not-found-code{color:var(--red)}
 .contact .btn:not(.btn-whatsapp){background:var(--butter);border-color:var(--butter);color:var(--red)!important}
 .contact .btn:not(.btn-whatsapp):hover{background:#fff}
@@ -416,9 +402,9 @@ body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
 /* Images: no drag, no long-press save menu on phones */
 img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 
-/* ===== Section colors: only red (the "Get in Touch" gradient) and gingham; the footer is the only brown =====
+/* ===== Section colors: only red (the "Get in Touch" gradient) and gingham; the footer is cream, like the product label =====
    hero gingham | products RED | nutrition gingham | why RED | about gingham |
-   ways to enjoy RED | where to buy gingham | booths RED | FAQ gingham | contact RED | footer brown */
+   ways to enjoy RED | where to buy gingham | booths RED | FAQ gingham | contact RED | footer cream label */
 
 /* Gingham sections (hero and where-to-buy already have it) */
 .nutrition,.story,.faq{background:var(--gingham);position:relative}
@@ -452,3 +438,30 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .booths .booth-note strong,.booths .booth-note a{color:var(--butter)}
 .booths .booth-empty{color:var(--cream)}
 .booths .booth-empty h3{color:var(--butter)}
+
+
+/* ===== Footer: styled like the Fundy's product label =====
+   Top strip uses the same red gradient as "Get in Touch" so the dome rises out of it; the band is the label cream. */
+.site-footer{background:var(--grad);color:var(--brown-dark);padding:0}
+.footer-dome{width:min(380px,100% - 2rem);margin:0 auto;background:var(--cream);border-radius:50% 50% 0 0 / 80% 80% 0 0;padding:1.5rem 1.5rem .9rem;text-align:center}
+.footer-dome .logo img{height:40px;margin:0 auto}
+.footer-dome p{margin:.6rem 0 0;font-size:.95rem;line-height:1.35;color:var(--brown-dark)}
+.footer-band{background:var(--cream);padding:1.6rem 0 1.2rem}
+.footer-cols{display:grid;grid-template-columns:1fr;gap:1.6rem;text-align:center;align-items:start}
+.footer-cols p{margin:0 0 .8rem}
+.footer-cols a{color:var(--brown-dark)}
+.footer-script{font-family:var(--font-script);font-size:2.4rem;line-height:1;color:var(--brown);margin:0 0 .5rem!important}
+.footer-find ul{justify-content:center;gap:1.1rem}
+.footer-find a{font-weight:700;text-decoration:underline}
+.footer-blurb p{font-size:.95rem;line-height:1.45;max-width:17rem;margin-inline:auto}
+.footer-contact{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center}
+.footer-contact a{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;border:2px solid var(--brown-dark);color:var(--brown-dark);transition:background .15s,color .15s}
+.footer-contact a:hover{background:var(--brown-dark);color:var(--cream)}
+.footer-contact .icon{width:1.4rem;height:1.4rem}
+.copyright{text-align:center;font-size:.85rem;color:var(--muted);margin:1.4rem auto 0;padding:1rem 1rem 0;border-top:1px solid rgba(114,55,32,.18);width:min(1120px,100% - 2rem)}
+@media (min-width:800px){
+  .footer-cols{grid-template-columns:1fr 1fr 1fr;gap:2rem}
+  .footer-address{text-align:left}
+  .footer-address .footer-contact{justify-content:flex-start}
+  .footer-blurb{text-align:center}
+}

@@ -468,3 +468,13 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
   .footer-cols .copyright-desk{display:block}
   .footer-cols .copyright-mob{display:none}
 }
+
+/* ===== 403 / 404 pages on red: same gradient as the footer's top band, so the page flows into the footer dome ===== */
+.not-found{background:var(--grad);color:var(--cream)}
+.not-found::before{display:none}
+.not-found h1,.not-found .not-found-code{color:var(--butter)}
+.not-found p{color:var(--cream)}
+.not-found .btn:not(.btn-ghost){background:var(--butter);border-color:var(--butter);color:var(--red)!important}
+.not-found .btn:not(.btn-ghost):hover{background:#fff}
+.not-found .btn-ghost{background:transparent!important;border-color:var(--butter);color:var(--butter)!important}
+.not-found .btn-ghost:hover{background:var(--butter)!important;color:var(--red)!important}

@@ -458,7 +458,7 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .footer-contact a{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:50%;border:2px solid var(--brown-dark);color:var(--brown-dark);transition:background .15s,color .15s}
 .footer-contact a:hover{background:var(--brown-dark);color:var(--cream)}
 .footer-contact .icon{width:1.4rem;height:1.4rem}
-.copyright{text-align:center;font-size:.85rem;color:var(--muted);margin:1.4rem auto 0;padding:1rem 1rem 0;border-top:1px solid rgba(114,55,32,.18);width:min(1120px,100% - 2rem)}
+.footer-cols .copyright{font-size:.9rem;color:var(--brown-dark);margin:.9rem 0 0}
 @media (min-width:800px){
   .footer-cols{grid-template-columns:1fr 1fr 1fr;gap:2rem}
   .footer-address{text-align:left}

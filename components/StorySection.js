@@ -57,12 +57,20 @@ export default function StorySection() {
             width="1400"
             height="1072"
             alt="The Fundy's team holding a Fundy's gift box and jars of cheese spread"
-            style={{ position: 'relative', display: 'block', width: '100%', height: 'auto' }}
+            style={{
+              position: 'relative',
+              display: 'block',
+              width: '100%',
+              height: 'auto',
+              // fade the cut-off bottom edge into the background so it doesn't sit hard against the text below
+              WebkitMaskImage: 'linear-gradient(to bottom, #000 72%, transparent 100%)',
+              maskImage: 'linear-gradient(to bottom, #000 72%, transparent 100%)',
+            }}
           />
         </div>
 
         <style>{`
-          .story-split{display:grid;grid-template-columns:1fr;gap:2rem;margin-top:1.5rem;align-items:center}
+          .story-split{display:grid;grid-template-columns:1fr;gap:2rem;margin-top:.5rem;align-items:center}
           .story-text{max-width:38rem;margin:0 auto;text-align:center}
           .story-video{width:100%;max-width:340px;margin:0 auto}
           @media (min-width:900px){

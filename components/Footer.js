@@ -33,12 +33,15 @@ export default function Footer() {
                 <li><a href="https://www.facebook.com/share/1P3eAZ63ca/" rel="noopener me" target="_blank">Facebook</a></li>
               </ul>
             </nav>
-            <p className="copyright">&copy; <Year initial={new Date().getFullYear()} /> Fundy's. All rights reserved.</p>
+            <p className="copyright copyright-desk">&copy; <Year initial={new Date().getFullYear()} /> Fundy's. All rights reserved.</p>
           </div>
 
           <div className="footer-col footer-blurb">
             <p>Made with real Edam Cheese imported from the Netherlands. Perfect on crackers, toasted bread, or as a dip with chips.</p>
           </div>
+
+          {/* Phones: copyright goes last, under the blurb. Wide screens: it sits under the links instead (copyright-desk). */}
+          <p className="copyright copyright-mob">&copy; <Year initial={new Date().getFullYear()} /> Fundy's. All rights reserved.</p>
         </div>
       </div>
     </footer>

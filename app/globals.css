@@ -47,7 +47,7 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 *{-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth;scroll-padding-top:80px}
+html{scroll-behavior:smooth;scroll-padding-top:77px}
 body{margin:0;font-family:var(--font-body);color:var(--ink);background:var(--cream);line-height:1.65;font-size:1.0625rem}
 img{max-width:100%;height:auto;display:block}
 h1,h2,h3{font-family:var(--font-script);line-height:1.05;color:var(--red);margin:0 0 .35em;font-weight:700}

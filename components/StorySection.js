@@ -61,7 +61,19 @@ export default function StorySection() {
           />
         </div>
 
-        <div style={{ maxWidth: '38rem', margin: '1.5rem auto 0', textAlign: 'center' }}>
+        <style>{`
+          .story-split{display:grid;grid-template-columns:1fr;gap:2rem;margin-top:1.5rem;align-items:center}
+          .story-text{max-width:38rem;margin:0 auto;text-align:center}
+          .story-video{width:100%;max-width:340px;margin:0 auto}
+          @media (min-width:900px){
+            .story-split{grid-template-columns:1.2fr 1fr;gap:3.5rem;max-width:1000px;margin-left:auto;margin-right:auto}
+            .story-text{max-width:none;margin:0;text-align:left}
+            .story-video{margin:0 auto}
+          }
+        `}</style>
+
+        <div className="story-split">
+        <div className="story-text">
           <p style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--red)' }}>
             Fundy&rsquo;s Spreads is a small business born from a home kitchen in Quezon Province.
           </p>
@@ -75,10 +87,9 @@ export default function StorySection() {
 
         {/* Video: loads only after the visitor taps play (poster is og-image). Native controls (timeline seeking); long-press / right-click also lets visitors save it. */}
         <div
+          className="story-video"
           style={{
             position: 'relative',
-            margin: '2rem auto 0',
-            maxWidth: 420,
             borderRadius: 8,
             overflow: 'hidden',
             boxShadow: 'var(--shadow)',
@@ -95,8 +106,9 @@ export default function StorySection() {
             controls
             controlsList="nodownload"
             aria-label="Fundy's Spread video"
-            style={{ width: '100%', height: 'auto', aspectRatio: '9 / 16', objectFit: 'cover', display: 'block', background: '#000' }}
+            style={{ width: '100%', height: 'auto', aspectRatio: '3 / 4', objectFit: 'cover', display: 'block', background: '#000' }}
           />
+        </div>
         </div>
       </div>
     </section>

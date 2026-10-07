@@ -18,6 +18,28 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const headerRef = useRef(null);
 
+  // keep the in-page scroll offset exactly equal to the sticky header's height (desktop and phone differ),
+  // so a section starts right under the nav with no gap or overlap
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return undefined;
+    const root = document.documentElement;
+    const update = () => {
+      root.style.scrollPaddingTop = Math.floor(el.getBoundingClientRect().height) + 'px';
+    };
+    update();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', update);
+      return () => window.removeEventListener('resize', update);
+    }
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.scrollPaddingTop = '';
+    };
+  }, []);
+
   // close the menu with Esc or when tapping outside the header
   useEffect(() => {
     if (!open) return undefined;

@@ -51,21 +51,7 @@ export default function BoothBanner({ booths: initial }) {
   return (
     <aside className="booth-banner" role="region" aria-label="Upcoming booth">
       <div className="booth-banner-head">
-        <img
-          className="booth-banner-icon"
-          src="/icon.svg"
-          width="44"
-          height="44"
-          alt=""
-          onError={(e) => {
-            const img = e.currentTarget;
-            if (!img.dataset.fallback) {
-              img.dataset.fallback = '1';
-              img.src = '/favicon.svg';
-            }
-          }}
-        />
-        <span className="booth-banner-name">Fundy's</span>
+        <img className="booth-banner-logo" src="/images/logo-pill.webp" width="839" height="339" alt="Fundy's" />
       </div>
       <p className="booth-banner-text">
         <Phrase template={template} values={info.values} />

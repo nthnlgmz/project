@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from 'react';
 
 const LINKS = [
   { href: '#products', label: 'Products' },
-  { href: '#why-fundys', label: "Why Fundy's" },
+  { href: '#nutrition', label: 'Nutrition' },
+  { href: '#about-us', label: 'About Us' },
   { href: '#ways-to-enjoy', label: 'Ways to Enjoy' },
+  { href: '#booths', label: 'Booths' },
   { href: '#faq', label: 'FAQ' },
   { href: '#contact', label: 'Contact' },
 ];
@@ -15,6 +17,28 @@ const LINKS = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const headerRef = useRef(null);
+
+  // keep the in-page scroll offset exactly equal to the sticky header's height (desktop and phone differ),
+  // so a section starts right under the nav with no gap or overlap
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return undefined;
+    const root = document.documentElement;
+    const update = () => {
+      root.style.scrollPaddingTop = Math.floor(el.getBoundingClientRect().height) + 'px';
+    };
+    update();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', update);
+      return () => window.removeEventListener('resize', update);
+    }
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.scrollPaddingTop = '';
+    };
+  }, []);
 
   // close the menu with Esc or when tapping outside the header
   useEffect(() => {
@@ -49,7 +73,7 @@ export default function Header() {
           </svg>
         </button>
 
-        <a className="logo" href="/" aria-label="Fundy's home">Fundy's</a>
+        <a className="logo" href="/" aria-label="Fundy's home"><img src="/images/logo-pill.webp" width="839" height="339" alt="Fundy's" /></a>
 
         <nav aria-label="Primary" className="primary-nav">
           <ul>

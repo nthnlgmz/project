@@ -9,17 +9,15 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Hanken+Grotesk:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&display=swap">
   <style>
-    /* Brand fonts, same files as the main site */
-    @font-face{font-family:"Biro Script";src:url("/fonts/Biro_Script_reduced.otf") format("opentype"),url("/fonts/Biro_Script_reduced.ttf") format("truetype");font-weight:100 900;font-style:normal;font-display:swap}
     :root{
       /* Fundy's brand kit, same values as the main website */
       --red:#9b1313;--red-dark:#740d0d;--red-light:#bf4949;--brown:#723720;--brown-dark:#4a2412;
       --butter:#fff9c7;--cream:#fff6ea;--paper:#fffbf4;--ink:#512609;--muted:#6e4a35;
       --line:#e9d3c2;--radius:18px;--shadow:0 10px 30px rgba(114,55,32,.18);
       --grad:linear-gradient(90deg,#920000,#bf4949);
-      --font-script:"Biro Script","Caveat",cursive;
+      --font-script:var(--font-body); /* admin uses no script font */
       --font-body:"Hanken Grotesk","Akzidenz-Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
       /* older names used by the page script */
       --green:var(--brown);--green-dark:var(--brown-dark);--gold:var(--brown)
@@ -28,18 +26,17 @@
     *{-webkit-tap-highlight-color:transparent}
     body{margin:0;font-family:var(--font-body);color:var(--ink);line-height:1.55;font-size:1rem;min-height:100vh;
       background:
-        repeating-linear-gradient(0deg,rgba(155,19,19,.07) 0 14px,transparent 14px 28px),
         repeating-linear-gradient(90deg,rgba(155,19,19,.07) 0 14px,transparent 14px 28px),
         var(--cream)}
     h1,h2,h3{font-family:var(--font-script);color:var(--red);margin:0 0 .35rem;line-height:1.05;font-weight:700}
-    h2{font-size:clamp(1.9rem,5vw,2.5rem)}h3{font-size:1.7rem}
+    h2{font-size:clamp(1.5rem,4.5vw,2rem)}h3{font-size:1.3rem}
     a{color:var(--red)}
 
     /* ---------- top bar (same look as the website header) ---------- */
     .bar{position:sticky;top:0;z-index:10;background:rgba(255,246,234,.95);backdrop-filter:blur(8px);color:var(--brown-dark);display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;padding:.6rem 1rem;border-bottom:4px solid var(--red)}
     .bar .logo{display:inline-block;line-height:0}
     .bar .logo img{height:40px;width:auto}
-    .bar-title{font-family:var(--font-script);font-size:1.9rem;line-height:1;color:var(--red);font-weight:700}
+    .bar-title{font-family:var(--font-script);font-size:1.4rem;line-height:1;color:var(--red);font-weight:700}
     .status{margin-left:auto;font-size:.88rem;font-weight:600;padding:.25em .9em;border-radius:999px;background:rgba(114,55,32,.1);color:var(--brown-dark)}
     .status.dirty{background:var(--butter);color:var(--brown-dark);box-shadow:inset 0 0 0 2px var(--brown);font-weight:700}
     .avatar-wrap{position:relative;margin-left:auto;display:none}

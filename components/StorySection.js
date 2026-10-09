@@ -35,8 +35,8 @@ export default function StorySection() {
             aria-hidden="true"
             style={{
               position: 'absolute',
-              // centred on the girl's head: ~68% across and ~38% down the photo
-              top: 'calc(38% - 0.5em)',
+              // centred across the girl's head (~68%), lifted to ~24% down the photo (was 38%)
+              top: 'calc(24% - 0.5em)',
               left: '68%',
               transform: 'translateX(-50%)',
               textAlign: 'center',

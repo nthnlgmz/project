@@ -1,4 +1,5 @@
 import { NUTRITION } from '../lib/nutrition';
+import CountUp from './CountUp';
 
 // Alternative layout, no photo: the label sits beside four "at a glance" tiles taken from the same data.
 // Rename this file to NutritionSection.js to use it.
@@ -53,7 +54,7 @@ export default function NutritionSection() {
                 {n.rows.map((r) => (
                   <tr key={r.label} className={r.indent ? 'nf-indent' : ''}>
                     <th scope="row" className={r.bold ? 'nf-bold' : ''}>{r.label}</th>
-                    <td className={r.bold ? 'nf-bold' : ''}>{r.value}</td>
+                    <td className={r.bold ? 'nf-bold' : ''}><CountUp value={r.value} /></td>
                   </tr>
                 ))}
               </tbody>
@@ -66,7 +67,7 @@ export default function NutritionSection() {
             <ul className="nf-tiles">
               {tiles.map((t) => (
                 <li className="nf-tile" key={t.caption}>
-                  <strong>{t.value}</strong>
+                  <strong><CountUp value={t.value} /></strong>
                   <span>{t.caption}</span>
                 </li>
               ))}

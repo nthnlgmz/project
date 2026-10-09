@@ -35,7 +35,7 @@ export default function StorySection() {
             aria-hidden="true"
             style={{
               position: 'absolute',
-              top: '6%',
+              top: '-7%', // was 6%: raised so more of the lettering clears the heads
               left: 0,
               right: 0,
               textAlign: 'center',

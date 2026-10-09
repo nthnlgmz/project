@@ -33,9 +33,8 @@
   --grad:linear-gradient(90deg,#920000,#bf4949);
   --stripes:repeating-linear-gradient(90deg,var(--red) 0 26px,var(--cream) 26px 52px);
   --gingham:
-    repeating-linear-gradient(0deg, rgba(155,19,19,.42) 0 14px, transparent 14px 28px),
     repeating-linear-gradient(90deg, rgba(155,19,19,.42) 0 14px, transparent 14px 28px),
-    #fff;
+    #fff; /* now vertical red stripes only (name kept so every section using it updates) */
   /* Fonts: swap these three when the licensed files arrive (see layout.js) */
   --font-script:"Biro Script","Caveat",cursive;                 /* Biro Script, Caveat as backup */
   --font-body:"Hanken Grotesk","Akzidenz-Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif; /* stand-in for Akzidenz-Grotesk */

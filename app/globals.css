@@ -541,3 +541,10 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .co-pay:disabled{opacity:.7;cursor:wait}
 .co-empty{text-align:center;padding:2rem 0}
 @media (prefers-reduced-motion:reduce){.cart-panel,.cart-backdrop{transition:none}}
+
+/* ===== Checkout page polish ===== */
+.co-title{color:var(--h1-fill);-webkit-text-stroke:var(--h1-stroke-width) var(--h1-stroke);paint-order:stroke fill;letter-spacing:.01em;text-align:center}
+/* On /checkout the page above the footer is striped, not red: let the stripes run behind the footer and outline the dome in red instead */
+.checkout ~ .site-footer{background:var(--gingham)}
+.checkout ~ .site-footer .footer-dome{position:relative;z-index:1;border:5px solid var(--red);border-bottom:0;margin-bottom:-6px;padding-bottom:calc(.9rem + 6px)}
+.checkout ~ .site-footer .footer-band{background:linear-gradient(var(--red),var(--red)) top/100% 5px no-repeat,var(--cream);padding-top:calc(1.6rem + 5px)}

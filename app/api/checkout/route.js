@@ -37,12 +37,14 @@ export async function POST(request) {
   if (pErr) return json({ ok: false, error: 'Could not load products.' }, 500);
 
   const lines = [];
+  const images = {}; // product photo per id, shown on the PayMongo payment page
   for (const [id, qty] of wanted) {
     const p = (products || []).find((x) => x.id === id);
     if (!p || p.visible === false || p.in_stock === false) {
       return json({ ok: false, error: 'One of the items is no longer available. Please review your cart.' }, 409);
     }
     lines.push({ id, title: p.title, price: Number(p.price), qty });
+    images[id] = p.image ? (/^https?:\/\//i.test(p.image) ? p.image : '/' + String(p.image).replace(/^\/+/, '')) : '';
   }
   const total = lines.reduce((n, l) => n + l.price * l.qty, 0);
   if (!(total > 0)) return json({ ok: false, error: 'Invalid order total.' }, 400);
@@ -66,7 +68,11 @@ export async function POST(request) {
     body: JSON.stringify({ data: { attributes: {
       billing: { name: t('name'), email: t('email'), phone: t('phone'),
         address: { line1: t('line1'), line2: t('line2') || undefined, city: t('city'), state: t('province'), postal_code: t('postal'), country: 'PH' } },
-      line_items: lines.map((l) => ({ currency: 'PHP', amount: Math.round(l.price * 100), name: "Fundy's " + l.title, quantity: l.qty })),
+      line_items: lines.map((l) => {
+        const src = images[l.id];
+        const url = src ? (src.startsWith('/') ? site + src : src) : '';
+        return { currency: 'PHP', amount: Math.round(l.price * 100), name: "Fundy's " + l.title, quantity: l.qty, ...(url ? { images: [url] } : {}) };
+      }),
       payment_method_types: methods,
       description: 'Fundy\'s order ' + orderNo,
       reference_number: orderNo,

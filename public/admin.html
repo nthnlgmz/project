@@ -465,6 +465,7 @@
       state.orders = r.data || []; renderOrders();
     });
   }
+  var PAY_LABELS = { gcash: 'GCash', paymaya: 'Maya', card: 'Card', grab_pay: 'GrabPay', dob: 'Online banking', dob_ubp: 'UnionBank', brankas_bdo: 'BDO', brankas_landbank: 'Landbank', brankas_metrobank: 'Metrobank', billease: 'BillEase', qrph: 'QR Ph' };
   function renderOrders() {
     var all = $('oShowAll').checked;
     var list = state.orders.filter(function (o) { return all || o.status === 'paid' || o.status === 'shipped'; });
@@ -474,7 +475,7 @@
       var chip = o.status === 'paid' ? '<span class="chip red">To ship</span>' : o.status === 'shipped' ? '<span class="chip">Shipped</span>' : '<span class="chip grey">' + C.esc(o.status) + '</span>';
       var addr = [o.address_line1, o.address_line2, o.city, o.province, o.postal_code].filter(Boolean).map(C.esc).join(', ');
       return '<li class="row" style="align-items:flex-start"><div class="grow"><strong>' + C.esc(o.order_no) + chip + '</strong>' +
-        '<span class="meta">' + C.esc(when) + ' &middot; ' + C.esc(C.formatPrice(o.total)) + '</span><br>' +
+        '<span class="meta">' + C.esc(when) + ' &middot; ' + C.esc(C.formatPrice(o.total)) + (o.payment_method ? ' &middot; ' + C.esc(PAY_LABELS[o.payment_method] || o.payment_method) : '') + '</span><br>' +
         '<span>' + items + '</span><br>' +
         '<span><b>' + C.esc(o.customer_name) + '</b> &middot; <a href="tel:' + C.esc(o.customer_phone) + '">' + C.esc(o.customer_phone) + '</a> &middot; <a href="mailto:' + C.esc(o.customer_email) + '">' + C.esc(o.customer_email) + '</a></span><br>' +
         '<span class="meta">' + addr + '</span>' + (o.notes ? '<br><span class="meta">Note: ' + C.esc(o.notes) + '</span>' : '') + '</div>' +

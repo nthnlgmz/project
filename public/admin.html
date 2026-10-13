@@ -58,6 +58,17 @@
     .tabs button{font:inherit;font-weight:700;padding:.55em 1.3em;border-radius:999px;border:2px solid var(--red);background:var(--paper);color:var(--red);cursor:pointer;transition:background .15s,color .15s,transform .15s}
     .tabs button:hover{transform:translateY(-1px)}
     .tabs button[aria-selected="true"]{background:var(--grad);color:#fff}
+    .tabs button svg{display:none}
+    .tabs .t-short{display:none}
+    /* phones: tabs become a bottom navigation bar */
+    @media (max-width:640px){
+      #app{padding-bottom:calc(5.2rem + env(safe-area-inset-bottom))}
+      .tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;gap:0;flex-wrap:nowrap;background:rgba(255,246,234,.97);backdrop-filter:blur(8px);border-top:3px solid var(--red);padding:.3rem .3rem calc(.3rem + env(safe-area-inset-bottom));box-shadow:0 -6px 20px rgba(114,55,32,.15)}
+      .tabs button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:.15rem;border:0;border-radius:12px;background:transparent;color:var(--muted);padding:.4rem .1rem;font-size:.7rem;line-height:1.1;transform:none!important}
+      .tabs button svg{display:block;width:24px;height:24px;fill:currentColor}
+      .tabs button[aria-selected="true"]{background:var(--butter);color:var(--red)}
+      .tabs .t-long{display:none}.tabs .t-short{display:inline}
+    }
     .panel{background:var(--paper);border:2px solid var(--line);border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow)}
     .panel[hidden],[hidden]{display:none!important}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem 1.1rem}
@@ -116,6 +127,23 @@
     }
     .chip{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.15em .7em;border-radius:999px;background:var(--butter);color:var(--brown-dark);box-shadow:inset 0 0 0 1.5px var(--brown);margin-left:.4rem;vertical-align:middle}
     .chip.red{background:var(--red);color:#fff;box-shadow:none}.chip.grey{background:#e6dcd3;color:#5a4a40;box-shadow:none}
+
+    /* ---------- order cards ---------- */
+    .ocards{list-style:none;margin:1rem 0 0;padding:0;display:grid;gap:.8rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr))}
+    .ocards .hint{grid-column:1/-1}
+    .ocard{background:#fff;border:2px solid var(--line);border-radius:14px;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.5rem;min-width:0;overflow-wrap:anywhere}
+    .oc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem}
+    .oc-id{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;min-width:0}
+    .oc-id strong{color:var(--brown-dark);font-size:1.05rem}
+    .oc-total{font-weight:800;color:var(--red);font-size:1.2rem;white-space:nowrap}
+    .oc-sub{margin:0;font-size:.85rem;color:var(--muted)}
+    .oc-items{list-style:none;margin:0;padding:.5rem .7rem;background:var(--cream);border-radius:10px;font-size:.92rem;display:grid;gap:.15rem}
+    .oc-cust{display:grid;gap:.1rem;font-size:.92rem}
+    .oc-cust a{color:var(--brown);text-decoration:underline}
+    .oc-addr,.oc-note{margin:0;font-size:.88rem;color:var(--muted);line-height:1.4}
+    .oc-foot{margin-top:auto;padding-top:.3rem}
+    .oc-foot .btn{width:100%}
+    @media (min-width:641px){.oc-foot .btn{width:auto}}
 
     /* ---------- dashboard ---------- */
     .dash-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.8rem;flex-wrap:wrap}
@@ -209,10 +237,10 @@
 
     <div id="app" hidden>
     <nav class="tabs" role="tablist" aria-label="Admin sections">
-      <button type="button" role="tab" id="t-dashboard" data-tab="dashboard" aria-selected="true">Dashboard</button>
-      <button type="button" role="tab" id="t-orders" data-tab="orders" aria-selected="false">Orders</button>
-      <button type="button" role="tab" id="t-products" data-tab="products" aria-selected="false">Products</button>
-      <button type="button" role="tab" id="t-booths" data-tab="booths" aria-selected="false">Upcoming booths</button>
+      <button type="button" role="tab" id="t-dashboard" data-tab="dashboard" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16v-2H4v2zm1-4h3V9H5v7zm5 0h3V4h-3v12zm5 0h3v-5h-3v5z"/></svg><span class="t-label">Dashboard</span></button>
+      <button type="button" role="tab" id="t-orders" data-tab="orders" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7 7V6a5 5 0 0 1 10 0v1h3l-1 14H5L4 7h3zm2 0h6V6a3 3 0 0 0-6 0v1z"/></svg><span class="t-label">Orders</span></button>
+      <button type="button" role="tab" id="t-products" data-tab="products" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M8 3h8v2H8V3zM7 6h10l1 2v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8l1-2zm1 5v6h8v-6H8z"/></svg><span class="t-label">Products</span></button>
+      <button type="button" role="tab" id="t-booths" data-tab="booths" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l2-5h14l2 5v2a3 3 0 0 1-3 1 3 3 0 0 1-3-1 3 3 0 0 1-3 1 3 3 0 0 1-3-1 3 3 0 0 1-3 1 3 3 0 0 1-3-1V9zm2 5.5V20h14v-5.5a5 5 0 0 1-1 .1 5 5 0 0 1-3-1 5 5 0 0 1-3 1 5 5 0 0 1-3-1 5 5 0 0 1-3 1 5 5 0 0 1-1-.1z"/></svg><span class="t-label"><span class="t-long">Upcoming booths</span><span class="t-short">Booths</span></span></button>
     </nav>
 
     <!-- ================= DASHBOARD ================= -->
@@ -300,7 +328,7 @@
         <button type="button" class="btn small ghost" id="oRefresh">Refresh</button>
       </div>
       <p class="msg" id="orderMsg" role="status"></p>
-      <ul class="rows" id="orderList"></ul>
+      <ul class="ocards" id="orderList"></ul>
     </section>
 
     <section class="panel" id="tab-products" role="tabpanel" aria-labelledby="t-products" hidden>
@@ -540,16 +568,22 @@
     var all = $('oShowAll').checked;
     var list = state.orders.filter(function (o) { return all || o.status === 'paid' || o.status === 'shipped'; });
     $('orderList').innerHTML = list.length ? list.map(function (o) {
-      var items = (o.items || []).map(function (i) { return C.esc(i.qty + ' \u00d7 ' + i.title); }).join(', ');
+      var items = (o.items || []).map(function (i) { return '<li>' + C.esc(i.qty) + ' &times; ' + C.esc(i.title) + '</li>'; }).join('');
       var when = new Date(o.created_at).toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' });
       var chip = o.status === 'paid' ? '<span class="chip red">To ship</span>' : o.status === 'shipped' ? '<span class="chip">Shipped</span>' : '<span class="chip grey">' + C.esc(o.status) + '</span>';
       var addr = [o.address_line1, o.address_line2, o.city, o.province, o.postal_code].filter(Boolean).map(C.esc).join(', ');
-      return '<li class="row" style="align-items:flex-start"><div class="grow"><strong>' + C.esc(o.order_no) + chip + '</strong>' +
-        '<span class="meta">' + C.esc(when) + ' &middot; ' + C.esc(C.formatPrice(o.total)) + (o.payment_method ? ' &middot; ' + C.esc(PAY_LABELS[o.payment_method] || o.payment_method) : '') + '</span><br>' +
-        '<span>' + items + '</span><br>' +
-        '<span><b>' + C.esc(o.customer_name) + '</b> &middot; <a href="tel:' + C.esc(o.customer_phone) + '">' + C.esc(o.customer_phone) + '</a> &middot; <a href="mailto:' + C.esc(o.customer_email) + '">' + C.esc(o.customer_email) + '</a></span><br>' +
-        '<span class="meta">' + addr + '</span>' + (o.notes ? '<br><span class="meta">Note: ' + C.esc(o.notes) + '</span>' : '') + '</div>' +
-        (o.status === 'paid' ? '<button type="button" class="btn small" data-order-ship="' + C.esc(o.id) + '">Mark shipped</button>' : '') + '</li>';
+      var pay = o.payment_method ? ' &middot; ' + C.esc(PAY_LABELS[o.payment_method] || o.payment_method) : '';
+      return '<li class="ocard">' +
+        '<div class="oc-head"><div class="oc-id"><strong>' + C.esc(o.order_no) + '</strong>' + chip + '</div><div class="oc-total">' + C.esc(C.formatPrice(o.total)) + '</div></div>' +
+        '<p class="oc-sub">' + C.esc(when) + pay + '</p>' +
+        '<ul class="oc-items">' + items + '</ul>' +
+        '<div class="oc-cust"><b>' + C.esc(o.customer_name) + '</b>' +
+          '<a href="tel:' + C.esc(o.customer_phone) + '">' + C.esc(o.customer_phone) + '</a>' +
+          '<a href="mailto:' + C.esc(o.customer_email) + '">' + C.esc(o.customer_email) + '</a></div>' +
+        '<p class="oc-addr">' + addr + '</p>' +
+        (o.notes ? '<p class="oc-note"><b>Note:</b> ' + C.esc(o.notes) + '</p>' : '') +
+        (o.status === 'paid' ? '<div class="oc-foot"><button type="button" class="btn small" data-order-ship="' + C.esc(o.id) + '">Mark shipped</button></div>' : '') +
+        '</li>';
     }).join('') : '<li class="hint">No orders to show yet.</li>';
   }
   $('oShowAll').addEventListener('change', renderOrders);

@@ -33,12 +33,36 @@ export async function POST(request) {
   if (attrs.type !== 'checkout_session.payment.paid') return new Response('ignored', { status: 200 });
 
   const session = attrs.data || {};
-  const meta = (session.attributes && session.attributes.metadata) || {};
+  const sAttrs = session.attributes || {};
+  const meta = sAttrs.metadata || {};
   const db = createClient(url, service, { auth: { persistSession: false } });
 
-  let q = db.from('orders').update({ status: 'paid', paid_at: new Date().toISOString() }).eq('status', 'pending');
-  q = session.id ? q.eq('paymongo_session_id', session.id) : q.eq('id', meta.order_id);
-  const { error } = await q;
-  if (error) return new Response('db error', { status: 500 }); // PayMongo retries on non-2xx
+  // Which method paid (gcash, paymaya, card, grab_pay...). Read it from the event; fall back to the payment source,
+  // then to asking PayMongo for the session, so it is recorded even if the event is missing the field.
+  let method = typeof sAttrs.payment_method_used === 'string' ? sAttrs.payment_method_used : null;
+  const sourceType = (p) => (p && p.attributes && p.attributes.source && p.attributes.source.type) || null;
+  if (!method) method = sourceType((sAttrs.payments || [])[0]);
+  if (!method && session.id && process.env.PAYMONGO_SECRET_KEY) {
+    try {
+      const res = await fetch('https://api.paymongo.com/v1/checkout_sessions/' + encodeURIComponent(session.id), {
+        headers: { Authorization: 'Basic ' + Buffer.from(process.env.PAYMONGO_SECRET_KEY + ':').toString('base64') },
+      });
+      const j = await res.json();
+      const a2 = (j && j.data && j.data.attributes) || {};
+      method = a2.payment_method_used || sourceType((a2.payments || [])[0]) || null;
+    } catch (e) { console.error('PayMongo session lookup failed', e); }
+  }
+
+  const forThisOrder = (q) => (session.id ? q.eq('paymongo_session_id', session.id) : q.eq('id', meta.order_id));
+
+  // 1) mark the order paid (this alone must never be blocked by anything below)
+  const paid = await forThisOrder(db.from('orders').update({ status: 'paid', paid_at: new Date().toISOString() }).eq('status', 'pending'));
+  if (paid.error) return new Response('db error', { status: 500 }); // PayMongo retries on non-2xx
+
+  // 2) record how they paid. Runs on every delivery, so tapping Retry in PayMongo also fills it for older orders.
+  if (method) {
+    const saved = await forThisOrder(db.from('orders').update({ payment_method: String(method).slice(0, 30) }).is('payment_method', null));
+    if (saved.error) console.error('Could not save payment_method (has supabase/add-payment-method.sql been run?)', saved.error.message);
+  }
   return new Response('ok', { status: 200 });
 }

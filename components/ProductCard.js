@@ -26,11 +26,6 @@ export default function ProductCard({ p, index, total }) {
         <p className="product-desc">{p.description}</p>
         <p className="price"><span className="price-amount">{Core.formatPrice(p.price)}</span></p>
         <AddToCartButton product={{ id: p.id, title: p.title, price: p.price, image: img }} soldOut={p.inStock === false} />
-            {tiktok ? (
-              <a className="btn btn-tiktok" href={tiktok} target="_blank" rel="noopener" aria-label={`Buy Fundy's ${p.title} on TikTok Shop`}>TikTok Shop</a>
-            ) : null}
-          </div>
-        ) : null}
       </article>
     </li>
   );

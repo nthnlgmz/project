@@ -3,8 +3,9 @@ import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useCart, peso } from '../../components/CartProvider';
 import { validate } from '../../lib/orders';
+import LocationFields from './LocationFields';
 
-const EMPTY = { name: '', email: '', phone: '', line1: '', line2: '', city: '', province: '', postal: '', notes: '' };
+const EMPTY = { name: '', email: '', phone: '', line1: '', line2: '', barangay: '', city: '', province: '', postal: '', notes: '' };
 
 export default function CheckoutForm() {
   const { items, total, ready, setQty } = useCart();
@@ -13,6 +14,7 @@ export default function CheckoutForm() {
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
+  const [geo, setGeo] = useState({ mode: 'loading', barangays: 0 }); // how the location fields are currently shown
   const [voucher, setVoucher] = useState('');
   const [voucherMsg, setVoucherMsg] = useState('');
   const set = (k) => (e) => setF((cur) => ({ ...cur, [k]: e.target.value }));
@@ -26,13 +28,14 @@ export default function CheckoutForm() {
     e.preventDefault();
     setMsg('');
     const errs = validate(f);
+    if (!f.barangay.trim() && (geo.mode === 'text' ? false : geo.barangays > 0)) errs.barangay = 'Select your barangay.';
     setErrors(errs);
     if (Object.keys(errs).length) { setMsg('Please fix the highlighted fields.'); return; }
     setBusy(true);
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customer: f, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
+        body: JSON.stringify({ customer: { ...f, line2: [f.line2.trim(), f.barangay.trim() ? 'Brgy. ' + f.barangay.trim() : ''].filter(Boolean).join(', ') }, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
       });
       const j = await res.json().catch(() => ({}));
       if (j.ok && j.checkoutUrl) { window.location.href = j.checkoutUrl; return; }
@@ -71,11 +74,14 @@ export default function CheckoutForm() {
           {field('email', 'Email *', { type: 'email', autoComplete: 'email', inputMode: 'email' })}
         </div>
         {field('line1', 'Street address, house/unit no. *', { autoComplete: 'address-line1' })}
-        {field('line2', 'Barangay / subdivision (optional)', { autoComplete: 'address-line2' })}
-        <div className="co-two">
-          {field('city', 'City / Municipality *', { autoComplete: 'address-level2' })}
-          {field('province', 'Province *', { autoComplete: 'address-level1' })}
-        </div>
+        {field('line2', 'Unit / building / subdivision (optional)', { autoComplete: 'address-line2' })}
+        <LocationFields
+          value={f}
+          errors={errors}
+          onChange={(patch) => setF((cur) => ({ ...cur, ...patch }))}
+          onMode={(mode, info) => setGeo({ mode, barangays: info.barangays })}
+          textField={field}
+        />
         {field('postal', 'Postal code *', { autoComplete: 'postal-code', inputMode: 'numeric', maxLength: 4 })}
         <div className="co-field">
           <label htmlFor="f-notes">Notes (optional)</label>

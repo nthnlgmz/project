@@ -13,7 +13,14 @@ export default function CheckoutForm() {
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
+  const [voucher, setVoucher] = useState('');
+  const [voucherMsg, setVoucherMsg] = useState('');
   const set = (k) => (e) => setF((cur) => ({ ...cur, [k]: e.target.value }));
+
+  // Voucher codes: interface only for now. Nothing is sent to the server and the total never changes.
+  function applyVoucher() {
+    setVoucherMsg(voucher.trim() ? 'Voucher codes are not available yet.' : 'Enter a voucher code.');
+  }
 
   async function submit(e) {
     e.preventDefault();
@@ -92,6 +99,18 @@ export default function CheckoutForm() {
             </li>
           ))}
         </ul>
+        <div className="co-voucher">
+          <label htmlFor="f-voucher">Voucher code</label>
+          <div className="co-voucher-row">
+            <input
+              id="f-voucher" value={voucher} autoComplete="off" autoCapitalize="characters" spellCheck="false" placeholder="Enter code"
+              onChange={(e) => { setVoucher(e.target.value); setVoucherMsg(''); }}
+              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyVoucher(); } }}
+            />
+            <button type="button" className="btn btn-ghost" onClick={applyVoucher}>Apply</button>
+          </div>
+          {voucherMsg ? <p className="co-note" role="status">{voucherMsg}</p> : null}
+        </div>
         <p className="cart-total"><span>Total</span><strong>{peso(total)}</strong></p>
         <p className="co-note">Delivery is arranged by Fundy's after your payment. You'll pay on PayMongo's secure page with GCash, Maya or card.</p>
         {msg ? <p className="co-msg" role="alert">{msg}</p> : null}

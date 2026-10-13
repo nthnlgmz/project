@@ -29,8 +29,7 @@ export function CartProvider({ children }) {
       if (found) return cur.map((i) => (i.id === p.id ? { ...i, qty: Math.min(i.qty + qty, 50) } : i));
       return [...cur, { id: p.id, title: p.title, price: Number(p.price) || 0, image: p.image || '', qty }];
     });
-    setOpen(true);
-  }, []);
+  }, []); // the cart stays closed so people can keep shopping; the header icon opens it
   const setQty = useCallback((id, qty) => {
     setItems((cur) => cur.flatMap((i) => (i.id !== id ? [i] : qty <= 0 ? [] : [{ ...i, qty: Math.min(qty, 50) }])));
   }, []);

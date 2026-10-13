@@ -3,6 +3,8 @@ import SvgSprite from '../components/SvgSprite';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProtectImages from '../components/ProtectImages';
+import { CartProvider } from '../components/CartProvider';
+import CartDrawer from '../components/CartDrawer';
 import { metadata as seoMetadata, viewport as seoViewport } from '../lib/seo';
 
 // Title, description, canonical, Open Graph, Twitter and icons all come from lib/seo.js
@@ -24,9 +26,12 @@ export default function RootLayout({ children }) {
         <SvgSprite />
         <ProtectImages />
         <a className="skip-link" href="#main">Skip to main content</a>
-        <Header />
-        {children}
-        <Footer />
+        <CartProvider>
+          <Header />
+          {children}
+          <CartDrawer />
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

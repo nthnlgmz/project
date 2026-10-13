@@ -518,7 +518,7 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .checkout{padding:2.5rem 0 4rem;background:var(--gingham)}
 .co-title{font-family:var(--font-display);color:var(--red);margin:.2rem 0 0}
 .co-grid{display:grid;gap:1.5rem;grid-template-columns:1fr;align-items:start}
-@media (min-width:900px){.co-grid{grid-template-columns:1.4fr 1fr}.co-summary{position:sticky;top:96px}}
+@media (min-width:900px){.co-grid{grid-template-columns:1.4fr 1fr;align-items:start}}
 .co-card{background:var(--paper);border:3px solid var(--brown);border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow);position:relative}
 .co-card h2{margin:0 0 1rem;font-family:var(--font-body);font-weight:800;font-size:1.3rem;color:var(--brown)}
 .co-field{display:grid;gap:.25rem;margin-bottom:.9rem}

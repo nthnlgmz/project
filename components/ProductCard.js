@@ -1,4 +1,5 @@
 import Core from '../public/fundys-core.js';
+import AddToCartButton from './AddToCartButton';
 
 // One product card. Everything comes from the Supabase `products` table (edited in /admin.html).
 export default function ProductCard({ p, index, total }) {
@@ -7,8 +8,6 @@ export default function ProductCard({ p, index, total }) {
   const alt = p.imageAlt || d.alt;
   const src = Core.imageSrc(img);
   const webp = p.webp && /\.(jpe?g|png)$/i.test(img) ? src.replace(/\.(jpe?g|png)$/i, '.webp') : '';
-  const shopee = Core.safeUrl(p.shopeeUrl);
-  const tiktok = Core.safeUrl(p.tiktokUrl);
   const badge = p.badge || (p.inStock === false ? 'Sold out' : '');
   const badgeClass = p.badge ? 'badge' : 'badge badge--soldout';
 
@@ -26,12 +25,7 @@ export default function ProductCard({ p, index, total }) {
         {badge ? <p className={badgeClass}>{badge}</p> : null}
         <p className="product-desc">{p.description}</p>
         <p className="price"><span className="price-amount">{Core.formatPrice(p.price)}</span></p>
-        <p className="price-note">Price may change or be lower in the shop.</p>
-        {shopee || tiktok ? (
-          <div className={'buy-row' + (shopee && tiktok ? '' : ' buy-row--single')}>
-            {shopee ? (
-              <a className="btn btn-shopee" href={shopee} target="_blank" rel="noopener" aria-label={`Buy Fundy's ${p.title} on Shopee`}>Shopee</a>
-            ) : null}
+        <AddToCartButton product={{ id: p.id, title: p.title, price: p.price, image: img }} soldOut={p.inStock === false} />
             {tiktok ? (
               <a className="btn btn-tiktok" href={tiktok} target="_blank" rel="noopener" aria-label={`Buy Fundy's ${p.title} on TikTok Shop`}>TikTok Shop</a>
             ) : null}

@@ -610,3 +610,18 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .mobile-menu .mobile-account{display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid rgba(114,55,32,.2);font:inherit;font-weight:700;color:var(--red);padding:.9rem 1.2rem;cursor:pointer}
 .mobile-menu .mobile-account span{display:block;font-weight:400;font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
 .co-link{font-size:.95rem}
+
+/* ===== Privacy policy page ===== */
+.legal{padding:2.5rem 0 4rem;background:var(--gingham);position:relative}
+.legal::before{content:"";position:absolute;inset:0;background:rgba(255,246,234,.9);pointer-events:none}
+.legal>.container{position:relative}
+.legal .co-title{margin:.2rem 0 0}
+.legal-updated{color:var(--muted);font-size:.9rem;margin:.6rem 0 0}
+.legal-card{max-width:46rem;margin:0 auto;background:var(--paper);border:3px solid var(--brown);border-radius:28px;padding:1.6rem 1.4rem;box-shadow:var(--shadow);color:var(--ink);line-height:1.65}
+.legal-card h2{font-family:var(--font-body);font-weight:800;font-size:1.2rem;color:var(--red);margin:1.6rem 0 .5rem}
+.legal-card p,.legal-card ul{margin:.5rem 0}
+.legal-card ul{padding-left:1.25rem}
+.legal-card li{margin:.35rem 0}
+.legal-card a{color:var(--red);text-decoration:underline;overflow-wrap:anywhere}
+.copyright a{color:inherit;text-decoration:underline;margin-left:.4em;white-space:nowrap}
+.co-check em a{color:var(--red);text-decoration:underline;font-weight:700}

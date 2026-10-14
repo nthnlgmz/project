@@ -50,11 +50,12 @@ export async function POST(request) {
   if (!(total > 0)) return json({ ok: false, error: 'Invalid order total.' }, 400);
 
   const t = (k) => String(f[k] || '').trim();
+  const line2 = [t('line2'), t('barangay') ? 'Brgy. ' + t('barangay') : ''].filter(Boolean).join(', '); // unit/subdivision + barangay
   const orderNo = 'FND-' + randomBytes(3).toString('hex').toUpperCase();
   const { data: order, error: oErr } = await db.from('orders').insert({
     order_no: orderNo, status: 'pending',
     customer_name: t('name'), customer_email: t('email'), customer_phone: t('phone'),
-    address_line1: t('line1'), address_line2: t('line2') || null, city: t('city'), province: t('province'), postal_code: t('postal'),
+    address_line1: t('line1'), address_line2: line2 || null, city: t('city'), province: t('province'), postal_code: t('postal'),
     notes: t('notes').slice(0, 500) || null, items: lines, total,
   }).select('id').single();
   if (oErr) return json({ ok: false, error: 'Could not save your order. Please try again.' }, 500);
@@ -67,7 +68,7 @@ export async function POST(request) {
     headers: { 'Content-Type': 'application/json', Authorization: 'Basic ' + Buffer.from(pmKey + ':').toString('base64') },
     body: JSON.stringify({ data: { attributes: {
       billing: { name: t('name'), email: t('email'), phone: t('phone'),
-        address: { line1: t('line1'), line2: t('line2') || undefined, city: t('city'), state: t('province'), postal_code: t('postal'), country: 'PH' } },
+        address: { line1: t('line1'), line2: line2 || undefined, city: t('city'), state: t('province'), postal_code: t('postal'), country: 'PH' } },
       line_items: lines.map((l) => {
         const src = images[l.id];
         const url = src ? (src.startsWith('/') ? site + src : src) : '';

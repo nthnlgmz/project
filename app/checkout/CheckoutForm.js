@@ -127,7 +127,7 @@ export default function CheckoutForm() {
       if (j.ok && j.checkoutUrl) { window.location.href = j.checkoutUrl; return; }
       if (j.errors) { setErrors(j.errors); focusFirstError(j.errors); }
       else if (j.voucherError) { setApplied(null); setVoucherMsg(j.error || 'This voucher is no longer available.'); }
-      else setMsg(j.error || 'Something went wrong. Please try again.');
+      else setMsg(j.error || (res.ok ? 'Something went wrong. Please try again.' : 'Server error (' + res.status + '). Please try again.'));
     } catch { setMsg('Network problem. Please check your connection and try again.'); }
     setBusy(false);
   }

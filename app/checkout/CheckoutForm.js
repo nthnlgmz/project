@@ -173,7 +173,7 @@ export default function CheckoutForm() {
         {user ? (
           <label className="co-check">
             <input type="checkbox" checked={saveMe} onChange={(e) => setSaveMe(e.target.checked)} />
-            <span>Save my details for next time. <em>We only use them to fill in your next order. You can delete them here any time.</em></span>
+            <span>Save my details for next time. <em>We only use them to fill in your next order. You can delete them here any time. <a href="/privacy" target="_blank" rel="noopener">Privacy Policy</a></em></span>
           </label>
         ) : null}
         <input type="text" name="company" tabIndex="-1" autoComplete="off" aria-hidden="true" style={{ position: 'absolute', left: '-9999px' }} />

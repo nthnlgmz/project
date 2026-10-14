@@ -282,7 +282,7 @@
       <h2>Vouchers</h2>
       <p class="hint">Customers type the code at checkout. The discount is worked out on the server from the real prices. Two kinds:
         <b>Usage-limited</b> (stops after a set number of orders) and <b>Date-restricted</b> (unlimited uses, but only on one Philippine calendar day, then it expires by itself).
-        A use is held while an order is waiting for payment and given back automatically if the order is cancelled or abandoned for 30 minutes.</p>
+        A use is <b>reserved for a customer for 10 minutes</b> the moment they apply the code, and becomes a real use when they pay. It is given back automatically if they remove the code, leave the page, let the 10 minutes run out, or the order is cancelled.</p>
       <form id="voucherForm" novalidate>
         <div class="grid">
           <div>
@@ -844,7 +844,7 @@
       var st = voucherStatus(v);
       var off = v.discount_type === 'percent' ? Number(v.discount_value) + '% off' : C.formatPrice(v.discount_value) + ' off';
       var detail = v.mode === 'limited'
-        ? 'Usage-limited &middot; ' + Number(v.used_count) + ' of ' + Number(v.max_uses) + ' used (' + Math.max(0, Number(v.max_uses) - Number(v.used_count)) + ' left)'
+        ? 'Usage-limited &middot; ' + Number(v.used_count) + ' of ' + Number(v.max_uses) + ' used or reserved (' + Math.max(0, Number(v.max_uses) - Number(v.used_count)) + ' left)'
         : 'Date-restricted &middot; valid ' + C.esc(dateLabel(v.valid_on)) + ' only &middot; used ' + Number(v.used_count) + ' time' + (Number(v.used_count) === 1 ? '' : 's');
       return '<li class="ocard"><div class="oc-head"><div class="oc-id"><strong>' + C.esc(v.code) + '</strong><span class="chip ' + st.c + '">' + st.t + '</span></div>' +
         '<div class="oc-total">' + C.esc(off) + '</div></div><p class="oc-sub">' + detail + '</p>' +

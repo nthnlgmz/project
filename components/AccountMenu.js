@@ -8,6 +8,7 @@ const USER_ICON = 'M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9zm0 2.25c-3.2 0-9 1
 export default function AccountMenu({ variant = 'desktop', onDone }) {
   const { user, ready, available, signIn, signOut } = useAuth();
   const [open, setOpen] = useState(false);
+  const [imgOk, setImgOk] = useState(true);
   const ref = useRef(null);
 
   useEffect(() => {
@@ -40,9 +41,13 @@ export default function AccountMenu({ variant = 'desktop', onDone }) {
     );
   }
   const initial = (displayName(user) || user.email || '?').trim().charAt(0).toUpperCase();
+  const meta = user.user_metadata || {};
+  const avatar = meta.avatar_url || meta.picture || '';
   return (
     <div className="account-wrap" ref={ref}>
-      <button type="button" className="account-btn signed" onClick={() => setOpen((v) => !v)} aria-haspopup="menu" aria-expanded={open} aria-label="Your account">{initial}</button>
+      <button type="button" className="account-btn signed" onClick={() => setOpen((v) => !v)} aria-haspopup="menu" aria-expanded={open} aria-label="Your account">
+        {avatar && imgOk ? <img src={avatar} alt="" referrerPolicy="no-referrer" onError={() => setImgOk(false)} /> : initial}
+      </button>
       {open ? (
         <div className="account-pop" role="menu">
           <p>Signed in as<br /><strong>{user.email}</strong></p>

@@ -134,6 +134,7 @@ export default function CheckoutForm() {
               <p><strong>Signed in</strong> as {user.email}</p>
               <p className="co-note">{profile ? 'We filled in your saved details.' : 'Tick the box at the bottom to save your details for next time.'}</p>
               <div className="co-account-actions">
+                <a className="co-link" href="/account/orders">My orders</a>
                 <button type="button" className="co-link" onClick={() => signOut()}>Sign out</button>
                 {profile ? <button type="button" className="co-link" onClick={deleteSaved}>Delete saved details</button> : null}
               </div>

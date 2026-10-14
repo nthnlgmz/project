@@ -625,3 +625,28 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .legal-card a{color:var(--red);text-decoration:underline;overflow-wrap:anywhere}
 .copyright a{color:inherit;text-decoration:underline;margin-left:.4em;white-space:nowrap}
 .co-check em a{color:var(--red);text-decoration:underline;font-weight:700}
+
+/* ===== My orders page ===== */
+.mo-wrap{max-width:46rem;margin:0 auto}
+.mo-center{text-align:center}
+.mo-center .btn{margin-top:.6rem}
+.mo-toggle{display:flex;gap:.5rem;align-items:center;margin:0 0 1rem;font-weight:700;color:var(--brown);cursor:pointer}
+.mo-toggle input{width:20px;height:20px;accent-color:var(--red)}
+.mo-list{list-style:none;margin:0;padding:0;display:grid;gap:1rem}
+.mo-card{background:var(--paper);border:3px solid var(--brown);border-radius:28px;padding:1.2rem;box-shadow:var(--shadow);color:var(--ink);display:grid;gap:.7rem;min-width:0;overflow-wrap:anywhere}
+.mo-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;flex-wrap:wrap}
+.mo-no{display:block;color:var(--brown);font-size:1.1rem}
+.mo-date{display:block;font-size:.85rem;color:var(--muted)}
+.mo-chip{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:.3em .8em;border-radius:999px;background:#e6dcd3;color:#5a4a40;white-space:nowrap}
+.mo-chip.paid{background:var(--butter);color:var(--red);border:2px solid var(--red)}
+.mo-chip.shipped{background:#dff3e3;color:#17653a}
+.mo-items{list-style:none;margin:0;padding:.6rem .8rem;background:var(--cream);border-radius:14px;display:grid;gap:.3rem;font-size:.95rem}
+.mo-items li{display:flex;justify-content:space-between;gap:.8rem}
+.mo-items em{font-style:normal;color:var(--muted)}
+.mo-total{display:flex;justify-content:space-between;align-items:center;margin:0;color:var(--brown);font-weight:700}
+.mo-total strong{color:var(--red);font-size:1.25rem}
+.mo-addr{margin:0;font-size:.9rem;color:var(--muted);line-height:1.5}
+.mo-card .btn{justify-self:start}
+@media (max-width:560px){.mo-card .btn{justify-self:stretch}}
+@media (min-width:821px){.account-pop .account-link{display:block;text-align:center;font-weight:700;padding:.5em;margin-bottom:.5rem;border-radius:999px;border:2px solid var(--brown);color:var(--brown);text-decoration:none}.account-pop .account-link:hover{background:var(--brown);color:#fff}}
+.mobile-menu a.mobile-account{text-decoration:none}

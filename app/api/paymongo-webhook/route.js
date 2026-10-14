@@ -56,8 +56,14 @@ export async function POST(request) {
   const forThisOrder = (q) => (session.id ? q.eq('paymongo_session_id', session.id) : q.eq('id', meta.order_id));
 
   // 1) mark the order paid (this alone must never be blocked by anything below)
-  const paid = await forThisOrder(db.from('orders').update({ status: 'paid', paid_at: new Date().toISOString() }).eq('status', 'pending'));
+  const paid = await forThisOrder(db.from('orders').update({ status: 'paid', paid_at: new Date().toISOString() }).eq('status', 'pending').select('id'));
   if (paid.error) return new Response('db error', { status: 500 }); // PayMongo retries on non-2xx
+
+  // A paid order always counts toward its voucher, even if the hold was released while the customer was still paying.
+  for (const row of paid.data || []) {
+    const r = await db.rpc('reclaim_order_voucher', { p_order_id: row.id });
+    if (r.error && !/reclaim_order_voucher/.test(r.error.message)) console.error('voucher reclaim failed', r.error.message);
+  }
 
   // 2) record how they paid. Runs on every delivery, so tapping Retry in PayMongo also fills it for older orders.
   if (method) {

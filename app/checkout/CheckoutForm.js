@@ -18,10 +18,13 @@ export default function CheckoutForm() {
   const [geo, setGeo] = useState({ mode: 'loading', barangays: 0 }); // how the location fields are currently shown
   const [voucher, setVoucher] = useState('');
   const [voucherMsg, setVoucherMsg] = useState('');
+  const [applied, setApplied] = useState(null); // { code, label, discount, total } once the server has accepted a voucher
+  const [voucherBusy, setVoucherBusy] = useState(false);
+  const startedAt = useRef(Date.now()); // how long the form has been open: bots submit instantly
   const set = (k) => (e) => setF((cur) => ({ ...cur, [k]: e.target.value }));
 
   // ---- Google sign-in: fill in saved details, optionally save new ones ----
-  const { user, token, client, ready: authReady, available: authAvailable, signIn, signOut } = useAuth();
+  const { user, token, client, ready: authReady, available: authAvailable, signIn } = useAuth();
   const [saveMe, setSaveMe] = useState(false);
   const [profile, setProfile] = useState(undefined); // undefined = not loaded yet, null = none saved
   const [preset, setPreset] = useState(null);        // saved dropdown choices to re-select
@@ -66,10 +69,32 @@ export default function CheckoutForm() {
     setProfile(null); setSaveMe(false);
   }
 
-  // Voucher codes: interface only for now. Nothing is sent to the server and the total never changes.
-  function applyVoucher() {
-    setVoucherMsg(voucher.trim() ? 'Voucher codes are not available yet.' : 'Enter a voucher code.');
+  // Voucher: the server works out the discount from the real prices; the browser only displays it.
+  async function checkVoucher(code) {
+    setVoucherBusy(true);
+    try {
+      const res = await fetch('/api/voucher', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (j.ok) { setApplied({ code: j.code, label: j.label, discount: j.discount, total: j.total }); setVoucherMsg(''); }
+      else { setApplied(null); setVoucherMsg(j.error || "This code isn't valid or has expired."); }
+    } catch { setVoucherMsg('Network problem. Please try again.'); }
+    setVoucherBusy(false);
   }
+  function applyVoucher() {
+    const code = voucher.trim();
+    if (!code) { setVoucherMsg('Enter a voucher code.'); return; }
+    setVoucherMsg('');
+    checkVoucher(code);
+  }
+  function removeVoucher() { setApplied(null); setVoucher(''); setVoucherMsg(''); }
+  // the discount depends on the cart, so check the voucher again whenever the cart total changes
+  useEffect(() => { if (applied && items.length) checkVoucher(applied.code); }, [total]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // a signed-in customer's receipt email is always their account email
+  useEffect(() => { if (user && user.email) setF((cur) => (cur.email === user.email ? cur : { ...cur, email: user.email })); }, [user]);
 
   // Scroll to (and focus) the first field that has an error, in the order they appear on the page.
   function focusFirstError(errs) {
@@ -96,11 +121,12 @@ export default function CheckoutForm() {
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
-        body: JSON.stringify({ customer: f, saveDetails: !!(token && saveMe), codes: { region: geoCodes.region, province: geoCodes.province, city: geoCodes.city, barangay: geoCodes.barangay }, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
+        body: JSON.stringify({ customer: f, voucher: applied ? applied.code : '', elapsedMs: Date.now() - startedAt.current, saveDetails: !!(token && saveMe), codes: { region: geoCodes.region, province: geoCodes.province, city: geoCodes.city, barangay: geoCodes.barangay }, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
       });
       const j = await res.json().catch(() => ({}));
       if (j.ok && j.checkoutUrl) { window.location.href = j.checkoutUrl; return; }
       if (j.errors) { setErrors(j.errors); focusFirstError(j.errors); }
+      else if (j.voucherError) { setApplied(null); setVoucherMsg(j.error || 'This voucher is no longer available.'); }
       else setMsg(j.error || 'Something went wrong. Please try again.');
     } catch { setMsg('Network problem. Please check your connection and try again.'); }
     setBusy(false);
@@ -131,11 +157,10 @@ export default function CheckoutForm() {
         {authAvailable && authReady ? (
           user ? (
             <div className="co-account">
-              <p><strong>Signed in</strong> as {user.email}</p>
+              <p className="co-signed"><span>Signed in as</span><span className="co-email" title={user.email}>{user.email}</span></p>
               <p className="co-note">{profile ? 'We filled in your saved details.' : 'Tick the box at the bottom to save your details for next time.'}</p>
               <div className="co-account-actions">
                 <a className="co-link" href="/account/orders">My orders</a>
-                <button type="button" className="co-link" onClick={() => signOut()}>Sign out</button>
                 {profile ? <button type="button" className="co-link" onClick={deleteSaved}>Delete saved details</button> : null}
               </div>
             </div>
@@ -153,7 +178,7 @@ export default function CheckoutForm() {
         {field('name', 'Full name *', { autoComplete: 'name' })}
         <div className="co-two">
           {field('phone', 'Mobile number *', { type: 'tel', autoComplete: 'tel', inputMode: 'tel', placeholder: '0917 123 4567' })}
-          {field('email', 'Email *', { type: 'email', autoComplete: 'email', inputMode: 'email' })}
+          {field('email', user ? 'Email (from your Google account)' : 'Email *', { type: 'email', autoComplete: 'email', inputMode: 'email', disabled: !!user })}
         </div>
         {field('line1', 'Street address, house/unit no. *', { autoComplete: 'address-line1' })}
         {field('line2', 'Unit / building / subdivision (optional)', { autoComplete: 'address-line2' })}
@@ -195,22 +220,30 @@ export default function CheckoutForm() {
             </li>
           ))}
         </ul>
-        <div className="co-voucher">
-          <label htmlFor="f-voucher">Voucher code</label>
-          <div className="co-voucher-row">
-            <input
-              id="f-voucher" value={voucher} autoComplete="off" autoCapitalize="characters" spellCheck="false" placeholder="Enter code"
-              onChange={(e) => { setVoucher(e.target.value); setVoucherMsg(''); }}
-              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyVoucher(); } }}
-            />
-            <button type="button" className="btn btn-ghost" onClick={applyVoucher}>Apply</button>
+        {applied ? (
+          <div className="co-voucher co-voucher-applied">
+            <span><b>{applied.code}</b> applied · {applied.label}</span>
+            <button type="button" className="co-link" onClick={removeVoucher}>Remove</button>
           </div>
-          {voucherMsg ? <p className="co-note" role="status">{voucherMsg}</p> : null}
-        </div>
-        <p className="cart-total"><span>Total</span><strong>{peso(total)}</strong></p>
+        ) : (
+          <div className="co-voucher">
+            <label htmlFor="f-voucher">Voucher code</label>
+            <div className="co-voucher-row">
+              <input
+                id="f-voucher" value={voucher} maxLength={40} autoComplete="off" autoCapitalize="characters" spellCheck="false" placeholder="Enter code"
+                onChange={(e) => { setVoucher(e.target.value); setVoucherMsg(''); }}
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyVoucher(); } }}
+              />
+              <button type="button" className="btn btn-ghost" onClick={applyVoucher} disabled={voucherBusy}>{voucherBusy ? '…' : 'Apply'}</button>
+            </div>
+            {voucherMsg ? <p className="co-note co-voucher-msg" role="status">{voucherMsg}</p> : null}
+          </div>
+        )}
+        {applied ? <p className="co-discount"><span>Discount</span><strong>&minus;{peso(applied.discount)}</strong></p> : null}
+        <p className="cart-total"><span>Total</span><strong>{peso(applied ? applied.total : total)}</strong></p>
         <p className="co-note">Delivery is arranged by Fundy's after your payment. You'll pay on PayMongo's secure page with GCash, Maya or card.</p>
         {msg ? <p className="co-msg" role="alert">{msg}</p> : null}
-        <button type="submit" className="btn co-pay" disabled={busy}>{busy ? 'Opening payment page…' : 'Pay ' + peso(total)}</button>
+        <button type="submit" className="btn co-pay" disabled={busy}>{busy ? 'Opening payment page…' : 'Pay ' + peso(applied ? applied.total : total)}</button>
       </aside>
     </form>
   );

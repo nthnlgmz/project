@@ -24,23 +24,37 @@ export default function CheckoutForm() {
     setVoucherMsg(voucher.trim() ? 'Voucher codes are not available yet.' : 'Enter a voucher code.');
   }
 
+  // Scroll to (and focus) the first field that has an error, in the order they appear on the page.
+  function focusFirstError(errs) {
+    const order = ['name', 'phone', 'email', 'line1', 'province', 'city', 'barangay', 'postal'];
+    for (const k of order) {
+      if (!errs[k]) continue;
+      const el = document.getElementById('f-' + k) || (k === 'province' || k === 'city' ? document.getElementById('f-region') : null);
+      if (!el) continue;
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      el.focus({ preventScroll: true });
+      return;
+    }
+  }
+
   async function submit(e) {
     e.preventDefault();
     setMsg('');
     const errs = validate(f);
-    if (!f.barangay.trim() && (geo.mode === 'text' ? false : geo.barangays > 0)) errs.barangay = 'Select your barangay.';
+    if (errs.barangay && geo.mode === 'select' && geo.barangays > 0) errs.barangay = 'Select your barangay.';
     setErrors(errs);
-    if (Object.keys(errs).length) { setMsg('Please fix the highlighted fields.'); return; }
+    if (Object.keys(errs).length) { focusFirstError(errs); return; }
     setBusy(true);
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customer: { ...f, line2: [f.line2.trim(), f.barangay.trim() ? 'Brgy. ' + f.barangay.trim() : ''].filter(Boolean).join(', ') }, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
+        body: JSON.stringify({ customer: f, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
       });
       const j = await res.json().catch(() => ({}));
       if (j.ok && j.checkoutUrl) { window.location.href = j.checkoutUrl; return; }
-      if (j.errors) setErrors(j.errors);
-      setMsg(j.error || 'Something went wrong. Please try again.');
+      if (j.errors) { setErrors(j.errors); focusFirstError(j.errors); }
+      else setMsg(j.error || 'Something went wrong. Please try again.');
     } catch { setMsg('Network problem. Please check your connection and try again.'); }
     setBusy(false);
   }

@@ -103,7 +103,7 @@ export default function LocationFields({ value, errors, onChange, onMode, textFi
           {textField('city', 'City / Municipality *', { autoComplete: 'address-level2' })}
           {textField('province', 'Province *', { autoComplete: 'address-level1' })}
         </div>
-        {textField('barangay', 'Barangay (optional)')}
+        {textField('barangay', 'Barangay *')}
       </>
     );
   }
@@ -111,7 +111,7 @@ export default function LocationFields({ value, errors, onChange, onMode, textFi
   return (
     <>
       <Select id="f-region" label="Region *" value={sel.region} onChange={pickRegion} items={regions} loading={false}
-        placeholder="Select region" error={noProvince ? errors.province : ''} />
+        placeholder="Select region" error={(!sel.region || noProvince) ? (errors.province || errors.city) : ''} />
       {sel.region && !noProvince ? (
         <Select id="f-province" label="Province *" value={sel.province} onChange={pickProvince} items={provinces}
           loading={busy === 'provinces'} placeholder="Select province" error={errors.province} />

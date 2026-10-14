@@ -10,7 +10,17 @@ import { CODE_RE, MIN_CHARGE_CENTS, normalizeCode, priceLines, describeVoucher }
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
+// Any unexpected crash still answers with readable JSON (and the real error goes to the Vercel logs: Project > Logs > /api/checkout).
 export async function POST(request) {
+  try {
+    return await handle(request);
+  } catch (e) {
+    console.error('checkout crashed:', e && e.stack ? e.stack : e);
+    return json({ ok: false, error: 'Something went wrong on our side. Please try again in a moment.' }, 500);
+  }
+}
+
+async function handle(request) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const pmKey = process.env.PAYMONGO_SECRET_KEY;
@@ -96,7 +106,10 @@ export async function POST(request) {
   // ---- PayMongo payment page ----
   const site = (process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin).replace(/\/$/, '');
   const methods = (process.env.PAYMONGO_METHODS || 'gcash,paymaya,card,grab_pay').split(',').map((m) => m.trim()).filter(Boolean);
-  const res = await fetch('https://api.paymongo.com/v1/checkout_sessions', {
+  let res = null;
+  let pm = {};
+  try {
+    res = await fetch('https://api.paymongo.com/v1/checkout_sessions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: 'Basic ' + Buffer.from(pmKey + ':').toString('base64') },
     body: JSON.stringify({ data: { attributes: {
@@ -115,12 +128,15 @@ export async function POST(request) {
       success_url: site + '/order/success?o=' + orderNo,
       cancel_url: site + '/checkout?cancelled=1',
     } } }),
-  });
-  const pm = await res.json().catch(() => ({}));
+    });
+    pm = await res.json().catch(() => ({}));
+  } catch (e) {
+    console.error('PayMongo request failed:', e && e.message ? e.message : e);
+  }
   const attrs = pm && pm.data && pm.data.attributes;
-  if (!res.ok || !attrs || !attrs.checkout_url) {
+  if (!res || !res.ok || !attrs || !attrs.checkout_url) {
     await db.from('orders').update({ status: 'cancelled' }).eq('id', order.id); // the database trigger gives the voucher use back
-    console.error('PayMongo error', res.status, JSON.stringify(pm).slice(0, 500));
+    console.error('PayMongo error', res ? res.status : 'no response', JSON.stringify(pm).slice(0, 500));
     return json({ ok: false, error: 'Payment page could not be created. Please try again.' }, 502);
   }
   await db.from('orders').update({ paymongo_session_id: pm.data.id }).eq('id', order.id);

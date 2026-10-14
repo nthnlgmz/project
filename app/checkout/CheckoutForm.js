@@ -6,6 +6,23 @@ import { useAuth, displayName } from '../../components/AuthProvider';
 import { validate } from '../../lib/orders';
 import LocationFields from './LocationFields';
 
+// A random id this browser keeps, so the server can recognise its own voucher reservation (it is not a login).
+let memoryToken = '';
+function voucherToken() {
+  const ok = (t) => typeof t === 'string' && /^[A-Za-z0-9-]{16,64}$/.test(t);
+  try {
+    let t = window.localStorage.getItem('fundys-voucher-token');
+    if (!ok(t)) {
+      t = window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : Array.from(window.crypto.getRandomValues(new Uint8Array(16))).map((b) => b.toString(16).padStart(2, '0')).join('');
+      window.localStorage.setItem('fundys-voucher-token', t);
+    }
+    return t;
+  } catch (e) {
+    if (!memoryToken) memoryToken = Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2) + Date.now().toString(16);
+    return memoryToken;
+  }
+}
+
 const EMPTY = { name: '', email: '', phone: '', line1: '', line2: '', barangay: '', city: '', province: '', postal: '', notes: '' };
 
 export default function CheckoutForm() {
@@ -75,10 +92,10 @@ export default function CheckoutForm() {
     try {
       const res = await fetch('/api/voucher', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
+        body: JSON.stringify({ code, token: voucherToken(), items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
       });
       const j = await res.json().catch(() => ({}));
-      if (j.ok) { setApplied({ code: j.code, label: j.label, discount: j.discount, total: j.total }); setVoucherMsg(''); }
+      if (j.ok) { setApplied({ code: j.code, label: j.label, discount: j.discount, total: j.total, reservedMinutes: j.reservedMinutes || 0 }); setVoucherMsg(''); }
       else { setApplied(null); setVoucherMsg(j.error || "This code isn't valid or has expired."); }
     } catch { setVoucherMsg('Network problem. Please try again.'); }
     setVoucherBusy(false);
@@ -89,7 +106,22 @@ export default function CheckoutForm() {
     setVoucherMsg('');
     checkVoucher(code);
   }
-  function removeVoucher() { setApplied(null); setVoucher(''); setVoucherMsg(''); }
+  function removeVoucher() {
+    setApplied(null); setVoucher(''); setVoucherMsg('');
+    fetch('/api/voucher', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'release', token: voucherToken() }) }).catch(() => {}); // give the reservation back
+  }
+  // leaving or reloading the page gives a reserved voucher use back straight away (if paying, the reservation is already the order's)
+  const appliedRef = useRef(null);
+  useEffect(() => { appliedRef.current = applied; }, [applied]);
+  useEffect(() => {
+    const onHide = () => {
+      if (appliedRef.current && navigator.sendBeacon) {
+        navigator.sendBeacon('/api/voucher', new Blob([JSON.stringify({ action: 'release', token: voucherToken() })], { type: 'application/json' }));
+      }
+    };
+    window.addEventListener('pagehide', onHide);
+    return () => window.removeEventListener('pagehide', onHide);
+  }, []);
   // the discount depends on the cart, so check the voucher again whenever the cart total changes
   useEffect(() => { if (applied && items.length) checkVoucher(applied.code); }, [total]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -121,7 +153,7 @@ export default function CheckoutForm() {
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
-        body: JSON.stringify({ customer: f, voucher: applied ? applied.code : '', elapsedMs: Date.now() - startedAt.current, saveDetails: !!(token && saveMe), codes: { region: geoCodes.region, province: geoCodes.province, city: geoCodes.city, barangay: geoCodes.barangay }, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
+        body: JSON.stringify({ customer: f, voucher: applied ? applied.code : '', voucherToken: applied ? voucherToken() : '', elapsedMs: Date.now() - startedAt.current, saveDetails: !!(token && saveMe), codes: { region: geoCodes.region, province: geoCodes.province, city: geoCodes.city, barangay: geoCodes.barangay }, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
       });
       const j = await res.json().catch(() => ({}));
       if (j.ok && j.checkoutUrl) { window.location.href = j.checkoutUrl; return; }
@@ -222,7 +254,7 @@ export default function CheckoutForm() {
         </ul>
         {applied ? (
           <div className="co-voucher co-voucher-applied">
-            <span><b>{applied.code}</b> applied · {applied.label}</span>
+            <span><b>{applied.code}</b> applied · {applied.label}{applied.reservedMinutes ? <small className="co-reserved">Reserved for you for {applied.reservedMinutes} minutes</small> : null}</span>
             <button type="button" className="co-link" onClick={removeVoucher}>Remove</button>
           </div>
         ) : (

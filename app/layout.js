@@ -6,6 +6,7 @@ import ProtectImages from '../components/ProtectImages';
 import { CartProvider } from '../components/CartProvider';
 import CartDrawer from '../components/CartDrawer';
 import { AuthProvider } from '../components/AuthProvider';
+import ScrollProgress from '../components/ScrollProgress';
 import { metadata as seoMetadata, viewport as seoViewport } from '../lib/seo';
 
 // Title, description, canonical, Open Graph, Twitter and icons all come from lib/seo.js
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
         <SvgSprite />
         <ProtectImages />
         <a className="skip-link" href="#main">Skip to main content</a>
+        <ScrollProgress />
         <AuthProvider>
           <CartProvider>
             <Header />

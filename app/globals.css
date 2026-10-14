@@ -635,8 +635,9 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .mo-list{list-style:none;margin:0;padding:0;display:grid;gap:1rem}
 .mo-card{background:var(--paper);border:3px solid var(--brown);border-radius:28px;padding:1.2rem;box-shadow:var(--shadow);color:var(--ink);display:grid;gap:.7rem;min-width:0;overflow-wrap:anywhere}
 .mo-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem;flex-wrap:wrap}
-.mo-no{display:block;color:var(--brown);font-size:1.1rem}
-.mo-date{display:block;font-size:.85rem;color:var(--muted)}
+.mo-title{margin:0;min-width:0}
+.mo-no{color:var(--brown);font-size:1.1rem}
+.mo-date{font-size:.95rem;color:var(--muted)}
 .mo-chip{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:.3em .8em;border-radius:999px;background:#e6dcd3;color:#5a4a40;white-space:nowrap}
 .mo-chip.paid{background:var(--butter);color:var(--red);border:2px solid var(--red)}
 .mo-chip.shipped{background:#dff3e3;color:#17653a}
@@ -650,3 +651,35 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 @media (max-width:560px){.mo-card .btn{justify-self:stretch}}
 @media (min-width:821px){.account-pop .account-link{display:block;text-align:center;font-weight:700;padding:.5em;margin-bottom:.5rem;border-radius:999px;border:2px solid var(--brown);color:var(--brown);text-decoration:none}.account-pop .account-link:hover{background:var(--brown);color:#fff}}
 .mobile-menu a.mobile-account{text-decoration:none}
+
+/* ===== Scroll progress bar (fixed at the very top, above the header) ===== */
+.scroll-progress{position:fixed;top:0;left:0;right:0;height:4px;z-index:100;pointer-events:none}
+.scroll-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--red),#e5573d);border-radius:0 4px 4px 0;box-shadow:0 0 6px rgba(155,19,19,.45);transition:width .12s linear}
+@media (prefers-reduced-motion:reduce){.scroll-progress span{transition:none}}
+
+/* ===== Signed-in box: long emails are cut with an ellipsis ===== */
+.co-signed{display:flex;gap:.35em;align-items:baseline;min-width:0;max-width:100%}
+.co-signed>span:first-child{font-weight:700;white-space:nowrap;flex:none}
+.co-email{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;min-width:0}
+.co-field input:disabled{background:#f1e8de;color:var(--muted);cursor:not-allowed}
+
+/* ===== Voucher applied ===== */
+.co-voucher-applied{display:flex;justify-content:space-between;align-items:center;gap:.6rem;background:#e8f5ea;border:2px solid #7fbf8a;border-radius:12px;padding:.55rem .8rem;color:#17653a}
+.co-discount{display:flex;justify-content:space-between;margin:0 0 .4rem;color:#17653a;font-weight:700}
+.co-voucher-msg{color:#b00020;font-weight:600}
+.mo-discount{display:flex;justify-content:space-between;margin:0;color:#17653a;font-weight:700;font-size:.95rem}
+
+/* ===== Desktop nav: "More" dropdown ===== */
+.primary-nav .nav-more{position:relative}
+.primary-nav .nav-more-btn{display:inline-flex;align-items:center;gap:.25rem;background:none;border:0;padding:0;font:inherit;font-weight:700;color:var(--brown);cursor:pointer}
+.primary-nav .nav-more-btn:hover,.primary-nav .nav-more-btn[aria-expanded="true"]{color:var(--red)}
+.primary-nav .nav-more-btn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.primary-nav .nav-more-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.primary-nav .nav-more-menu{position:absolute;top:calc(100% + 14px);right:0;z-index:60;min-width:190px;display:block;list-style:none;margin:0;padding:.4rem;background:var(--paper);border:2px solid var(--brown);border-radius:16px;box-shadow:0 12px 26px rgba(74,36,18,.25)}
+.primary-nav .nav-more-menu li{display:block}
+.primary-nav .nav-more-menu a{display:block;padding:.55rem .8rem;border-radius:10px;white-space:nowrap}
+.primary-nav .nav-more-menu a:hover{background:var(--cream);color:var(--red)}
+
+/* ===== Header account button: show the Google photo ===== */
+.account-btn.signed{padding:0;overflow:hidden}
+.account-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}

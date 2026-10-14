@@ -29,7 +29,7 @@ function Select({ id, label, value, onChange, items, loading, disabled, placehol
   );
 }
 
-export default function LocationFields({ value, errors, onChange, onMode, textField }) {
+export default function LocationFields({ value, errors, onChange, onMode, onCodes, preset, textField }) {
   const [mode, setMode] = useState('loading'); // loading | select | text
   const [regions, setRegions] = useState([]);
   const [provinces, setProvinces] = useState([]);
@@ -42,6 +42,31 @@ export default function LocationFields({ value, errors, onChange, onMode, textFi
 
   useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
   useEffect(() => { if (onMode) onMode(mode, { barangays: barangays.length }); }, [mode, barangays.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => { if (onCodes) onCodes(sel); }, [sel]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Re-select saved dropdown choices (region > province > city > barangay) from their PSGC codes.
+  useEffect(() => {
+    if (!preset || !preset.nonce || mode !== 'select' || !preset.regionCode) return;
+    (async () => {
+      setSel({ region: preset.regionCode, province: '', city: '', barangay: '' });
+      setProvinces([]); setCities([]); setBarangays([]);
+      const provs = await load('provinces', preset.regionCode, setProvinces);
+      let parent = preset.regionCode;
+      if (!provs.length) setNoProvince(true);
+      else {
+        setNoProvince(false);
+        if (!preset.provinceCode || !provs.some((p) => p.code === preset.provinceCode)) return;
+        setSel((s) => ({ ...s, province: preset.provinceCode }));
+        parent = preset.provinceCode;
+      }
+      const cs = await load('municipalities', parent, setCities);
+      if (!preset.cityCode || !cs.some((c) => c.code === preset.cityCode)) return;
+      setSel((s) => ({ ...s, city: preset.cityCode }));
+      const bs = await load('barangays', preset.cityCode, setBarangays);
+      if (preset.barangayCode && bs.some((b) => b.code === preset.barangayCode)) setSel((s) => ({ ...s, barangay: preset.barangayCode }));
+    })();
+  }, [preset && preset.nonce, mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     fetchItems('regions')

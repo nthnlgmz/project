@@ -1,7 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useCart, peso } from '../../components/CartProvider';
+import { useAuth, displayName } from '../../components/AuthProvider';
 import { validate } from '../../lib/orders';
 import LocationFields from './LocationFields';
 
@@ -18,6 +19,52 @@ export default function CheckoutForm() {
   const [voucher, setVoucher] = useState('');
   const [voucherMsg, setVoucherMsg] = useState('');
   const set = (k) => (e) => setF((cur) => ({ ...cur, [k]: e.target.value }));
+
+  // ---- Google sign-in: fill in saved details, optionally save new ones ----
+  const { user, token, client, ready: authReady, available: authAvailable, signIn, signOut } = useAuth();
+  const [saveMe, setSaveMe] = useState(false);
+  const [profile, setProfile] = useState(undefined); // undefined = not loaded yet, null = none saved
+  const [preset, setPreset] = useState(null);        // saved dropdown choices to re-select
+  const [geoCodes, setGeoCodes] = useState({});
+  const appliedFor = useRef('');
+
+  useEffect(() => {
+    if (!user || !client) { setProfile(undefined); appliedFor.current = ''; return undefined; }
+    let alive = true;
+    client.from('customer_profiles').select('*').eq('user_id', user.id).maybeSingle()
+      .then(({ data }) => { if (alive) setProfile(data || null); });
+    return () => { alive = false; };
+  }, [user, client]);
+
+  // Once the profile and the location fields are both ready, fill the form (never overwriting what they already typed).
+  useEffect(() => {
+    if (!user || profile === undefined || geo.mode === 'loading' || appliedFor.current === user.id) return;
+    appliedFor.current = user.id;
+    const p = profile || {};
+    const dropdown = geo.mode === 'select';
+    const canPlace = dropdown ? !!p.region_code : true; // a place saved in text mode can't re-select dropdowns
+    setF((cur) => ({
+      ...cur,
+      name: cur.name || p.name || displayName(user),
+      phone: cur.phone || p.phone || '',
+      email: cur.email || p.email || user.email || '',
+      line1: cur.line1 || p.line1 || '',
+      line2: cur.line2 || p.line2 || '',
+      postal: cur.postal || p.postal || '',
+      ...(canPlace && !cur.province && !cur.city ? { province: p.province || '', city: p.city || '', barangay: p.barangay || '' } : {}),
+    }));
+    if (dropdown && p.region_code) {
+      setPreset({ regionCode: p.region_code, provinceCode: p.province_code || '', cityCode: p.city_code || '', barangayCode: p.barangay_code || '', nonce: Date.now() });
+    }
+    if (profile) setSaveMe(true);
+  }, [user, profile, geo.mode]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function deleteSaved() {
+    if (!client || !user) return;
+    const { error } = await client.from('customer_profiles').delete().eq('user_id', user.id);
+    if (error) { setMsg('Could not delete your saved details. Please try again.'); return; }
+    setProfile(null); setSaveMe(false);
+  }
 
   // Voucher codes: interface only for now. Nothing is sent to the server and the total never changes.
   function applyVoucher() {
@@ -48,8 +95,8 @@ export default function CheckoutForm() {
     setBusy(true);
     try {
       const res = await fetch('/api/checkout', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ customer: f, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
+        method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
+        body: JSON.stringify({ customer: f, saveDetails: !!(token && saveMe), codes: { region: geoCodes.region, province: geoCodes.province, city: geoCodes.city, barangay: geoCodes.barangay }, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
       });
       const j = await res.json().catch(() => ({}));
       if (j.ok && j.checkoutUrl) { window.location.href = j.checkoutUrl; return; }
@@ -81,6 +128,26 @@ export default function CheckoutForm() {
     <form className="co-grid" onSubmit={submit} noValidate>
       <div className="co-card">
         <h2>Your details</h2>
+        {authAvailable && authReady ? (
+          user ? (
+            <div className="co-account">
+              <p><strong>Signed in</strong> as {user.email}</p>
+              <p className="co-note">{profile ? 'We filled in your saved details.' : 'Tick the box at the bottom to save your details for next time.'}</p>
+              <div className="co-account-actions">
+                <button type="button" className="co-link" onClick={() => signOut()}>Sign out</button>
+                {profile ? <button type="button" className="co-link" onClick={deleteSaved}>Delete saved details</button> : null}
+              </div>
+            </div>
+          ) : (
+            <div className="co-account">
+              <p>Have a Google account? Sign in to fill in your details faster.</p>
+              <button type="button" className="btn btn-ghost co-google" onClick={() => signIn('/checkout')}>
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="#4285F4" d="M23 12.27c0-.85-.08-1.67-.22-2.45H12v4.64h6.17a5.28 5.28 0 0 1-2.29 3.46v2.87h3.7C21.75 18.8 23 15.8 23 12.27z"/><path fill="#34A853" d="M12 23.5c3.1 0 5.7-1.03 7.58-2.79l-3.7-2.87c-1.03.69-2.34 1.1-3.88 1.1-2.98 0-5.5-2.01-6.4-4.72H1.78v2.96A11.5 11.5 0 0 0 12 23.5z"/><path fill="#FBBC05" d="M5.6 14.22a6.9 6.9 0 0 1 0-4.44V6.82H1.78a11.5 11.5 0 0 0 0 10.36l3.82-2.96z"/><path fill="#EA4335" d="M12 5.06c1.69 0 3.2.58 4.39 1.72l3.28-3.28C17.7 1.65 15.1.5 12 .5A11.5 11.5 0 0 0 1.78 6.82L5.6 9.78C6.5 7.07 9.02 5.06 12 5.06z"/></svg>
+                Continue with Google
+              </button>
+            </div>
+          )
+        ) : null}
         {cancelled ? <p className="co-banner">Payment was cancelled. Your cart is still here whenever you're ready.</p> : null}
         {field('name', 'Full name *', { autoComplete: 'name' })}
         <div className="co-two">
@@ -94,6 +161,8 @@ export default function CheckoutForm() {
           errors={errors}
           onChange={(patch) => setF((cur) => ({ ...cur, ...patch }))}
           onMode={(mode, info) => setGeo({ mode, barangays: info.barangays })}
+          onCodes={setGeoCodes}
+          preset={preset}
           textField={field}
         />
         {field('postal', 'Postal code *', { autoComplete: 'postal-code', inputMode: 'numeric', maxLength: 4 })}
@@ -101,6 +170,12 @@ export default function CheckoutForm() {
           <label htmlFor="f-notes">Notes (optional)</label>
           <textarea id="f-notes" rows="3" value={f.notes} onChange={set('notes')} maxLength={500} />
         </div>
+        {user ? (
+          <label className="co-check">
+            <input type="checkbox" checked={saveMe} onChange={(e) => setSaveMe(e.target.checked)} />
+            <span>Save my details for next time. <em>We only use them to fill in your next order. You can delete them here any time.</em></span>
+          </label>
+        ) : null}
         <input type="text" name="company" tabIndex="-1" autoComplete="off" aria-hidden="true" style={{ position: 'absolute', left: '-9999px' }} />
       </div>
 

@@ -26,9 +26,10 @@ export default function OrdersView() {
   useEffect(() => {
     if (!user || !client) { setOrders(undefined); return undefined; }
     let alive = true;
-    client.from('orders')
-      .select('id,order_no,status,total,items,created_at,payment_method,customer_name,customer_phone,address_line1,address_line2,city,province,postal_code')
-      .order('created_at', { ascending: false }).limit(50)
+    const base = 'id,order_no,status,total,items,created_at,payment_method,customer_name,customer_phone,address_line1,address_line2,city,province,postal_code';
+    const load = (cols) => client.from('orders').select(cols).order('created_at', { ascending: false }).limit(50);
+    load(base + ',voucher_code,discount')
+      .then((r) => (r.error ? load(base) : r)) // voucher columns not added yet: still show the orders
       .then(({ data, error: err }) => {
         if (!alive) return;
         if (err) { setError('We could not load your orders right now. Please try again later.'); setOrders([]); return; }
@@ -94,7 +95,7 @@ export default function OrdersView() {
             return (
               <li key={o.id} className="mo-card">
                 <div className="mo-head">
-                  <div><strong className="mo-no">{o.order_no}</strong><span className="mo-date">{when(o.created_at)}</span></div>
+                  <p className="mo-title"><strong className="mo-no">{o.order_no}</strong><span className="mo-date"> / {when(o.created_at)}</span></p>
                   <span className={'mo-chip ' + st.cls}>{st.label}</span>
                 </div>
                 <ul className="mo-items">
@@ -102,6 +103,9 @@ export default function OrdersView() {
                     <li key={idx}><span>{i.title} <em>&times; {i.qty}</em></span><span>{peso(Number(i.price) * Number(i.qty))}</span></li>
                   ))}
                 </ul>
+                {o.voucher_code && Number(o.discount) > 0 ? (
+                  <p className="mo-discount"><span>Voucher {o.voucher_code}</span><strong>&minus;{peso(o.discount)}</strong></p>
+                ) : null}
                 <p className="mo-total"><span>Total{o.payment_method ? ' · ' + (PAY[o.payment_method] || o.payment_method) : ''}</span><strong>{peso(o.total)}</strong></p>
                 <p className="mo-addr"><b>{o.customer_name}</b> · {o.customer_phone}<br />{addr}</p>
                 <button type="button" className="btn btn-ghost" disabled={busyId === o.id} onClick={() => orderAgain(o)}>

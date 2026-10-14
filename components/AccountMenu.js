@@ -23,7 +23,10 @@ export default function AccountMenu({ variant = 'desktop', onDone }) {
 
   if (variant === 'mobile') {
     return user ? (
-      <button type="button" className="mobile-account" onClick={() => { signOut(); if (onDone) onDone(); }}>Sign out <span>{user.email}</span></button>
+      <>
+        <a className="mobile-account" href="/account/orders" onClick={() => { if (onDone) onDone(); }}>My orders</a>
+        <button type="button" className="mobile-account" onClick={() => { signOut(); if (onDone) onDone(); }}>Sign out <span>{user.email}</span></button>
+      </>
     ) : (
       <button type="button" className="mobile-account" onClick={() => signIn()}>Sign in with Google</button>
     );
@@ -43,6 +46,7 @@ export default function AccountMenu({ variant = 'desktop', onDone }) {
       {open ? (
         <div className="account-pop" role="menu">
           <p>Signed in as<br /><strong>{user.email}</strong></p>
+          <a className="account-link" role="menuitem" href="/account/orders">My orders</a>
           <button type="button" role="menuitem" onClick={() => { setOpen(false); signOut(); }}>Sign out</button>
         </div>
       ) : null}

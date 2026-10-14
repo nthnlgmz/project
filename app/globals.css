@@ -664,6 +664,7 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .co-field input:disabled{background:#f1e8de;color:var(--muted);cursor:not-allowed}
 
 /* ===== Voucher applied ===== */
+.co-reserved{display:block;font-size:.8rem;font-weight:400;opacity:.85}
 .co-voucher-applied{display:flex;justify-content:space-between;align-items:center;gap:.6rem;background:#e8f5ea;border:2px solid #7fbf8a;border-radius:12px;padding:.55rem .8rem;color:#17653a}
 .co-discount{display:flex;justify-content:space-between;margin:0 0 .4rem;color:#17653a;font-weight:700}
 .co-voucher-msg{color:#b00020;font-weight:600}

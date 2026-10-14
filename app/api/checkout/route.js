@@ -5,7 +5,7 @@ import { randomBytes } from 'crypto';
 import { validate, sanitizeCustomer } from '../../../lib/orders';
 import { json, sameOrigin } from '../../../lib/security';
 import { parseCart, priceCart } from '../../../lib/cart-server';
-import { CODE_RE, MIN_CHARGE_CENTS, normalizeCode, priceLines, describeVoucher } from '../../../lib/vouchers';
+import { CODE_RE, TOKEN_RE, MIN_CHARGE_CENTS, normalizeCode, priceLines, describeVoucher } from '../../../lib/vouchers';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -73,7 +73,8 @@ async function handle(request) {
     const code = normalizeCode(body.voucher);
     if (!CODE_RE.test(code)) return json({ ok: false, voucherError: true, error: "This code isn't valid or has expired." }, 409);
     try { await db.rpc('expire_stale_voucher_holds'); } catch (e) { /* best effort */ }
-    const { data: rows, error: rErr } = await db.rpc('redeem_voucher', { p_code: code });
+    const vToken = TOKEN_RE.test(String(body.voucherToken || '')) ? String(body.voucherToken) : null;
+    const { data: rows, error: rErr } = await db.rpc('redeem_voucher', { p_code: code, p_token: vToken });
     const v = Array.isArray(rows) ? rows[0] : rows;
     if (rErr || !v) return json({ ok: false, voucherError: true, error: 'This voucher is no longer available.' }, 409);
     voucher = v;

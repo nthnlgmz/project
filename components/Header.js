@@ -121,6 +121,7 @@ export default function Header() {
           </ul>
         </nav>
 
+        <div className="header-actions">
         <AccountMenu variant="desktop" />
 
         <button type="button" className="cart-link" onClick={() => setCartOpen(true)} aria-label={count ? `Open cart, ${count} item${count > 1 ? 's' : ''}` : 'Open cart'}>
@@ -129,6 +130,7 @@ export default function Header() {
           </svg>
           {count > 0 ? <span className="cart-badge" aria-hidden="true">{count}</span> : null}
         </button>
+        </div>
       </div>
 
       <nav id="mobile-menu" className={'mobile-menu' + (open ? ' open' : '')} aria-label="Menu">

@@ -688,3 +688,8 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 /* Header: account photo and cart sit side by side at the right edge */
 .header-actions{display:flex;align-items:center;gap:.6rem;flex:none}
 @media (max-width:820px){.header-actions{justify-self:end}}
+
+/* Checkout, wide screens: the order summary stays in view while the customer scrolls through their details */
+@media (min-width:900px){
+  .co-summary{position:sticky;top:6.5rem;max-height:calc(100vh - 7.5rem);max-height:calc(100dvh - 7.5rem);overflow-y:auto}
+}

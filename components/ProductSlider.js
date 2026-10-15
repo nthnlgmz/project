@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Core from '../public/fundys-core.js';
 import ProductCard from './ProductCard';
 import { useLive } from './useLive';
@@ -12,6 +12,8 @@ export default function ProductSlider({ products: initial }) {
   const trackRef = useRef(null);
   const frame = useRef(0);
   const [pos, setPos] = useState({ index: 0, atStart: true, atEnd: false });
+  const wasAtStart = useRef(true);
+  const firstId = products.length ? products[0].id : null;
 
   const step = useCallback(() => {
     const t = trackRef.current;
@@ -27,6 +29,7 @@ export default function ProductSlider({ products: initial }) {
     const index = Math.min(t.children.length - 1, Math.max(0, Math.round(t.scrollLeft / step())));
     const atStart = t.scrollLeft <= 2;
     const atEnd = t.scrollLeft >= t.scrollWidth - t.clientWidth - 2;
+    wasAtStart.current = atStart;
     setPos((prev) => (prev.index === index && prev.atStart === atStart && prev.atEnd === atEnd ? prev : { index, atStart, atEnd }));
   }, [step]);
 
@@ -34,6 +37,15 @@ export default function ProductSlider({ products: initial }) {
     cancelAnimationFrame(frame.current);
     frame.current = requestAnimationFrame(update);
   }, [update]);
+
+  // When the first card is re-shown, the browser keeps the old first card in view (scroll anchoring + snap),
+  // then smooth-scrolls back. Jump straight to the start before paint so the second card never flashes.
+  useLayoutEffect(() => {
+    const t = trackRef.current;
+    if (t && wasAtStart.current && t.scrollLeft > 0) {
+      t.scrollTo({ left: 0, behavior: 'instant' });
+    }
+  }, [firstId, products.length]);
 
   useEffect(() => {
     update();
@@ -61,7 +73,7 @@ export default function ProductSlider({ products: initial }) {
         <button className="slider-btn" type="button" onClick={prev} disabled={pos.atStart} aria-label="Previous product">&#8592;</button>
         <button className="slider-btn" type="button" onClick={next} disabled={pos.atEnd} aria-label="Next product">&#8594;</button>
       </div>
-      <ul className="slider-track" ref={trackRef} onScroll={onScroll} onKeyDown={onKeyDown} tabIndex={0} aria-label="Product list, scroll horizontally">
+      <ul className="slider-track" ref={trackRef} style={{ overflowAnchor: 'none' }} onScroll={onScroll} onKeyDown={onKeyDown} tabIndex={0} aria-label="Product list, scroll horizontally">
         {products.map((p, i) => (
           <ProductCard key={p.id} p={p} index={i} total={products.length} />
         ))}

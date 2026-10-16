@@ -27,7 +27,9 @@ const EMPTY = { name: '', email: '', phone: '', line1: '', line2: '', barangay: 
 
 export default function CheckoutForm() {
   const { items, total, ready, setQty } = useCart();
-  const cancelled = useSearchParams().get('cancelled');
+  const params = useSearchParams();
+  const cancelled = params.get('cancelled');
+  const cancelledOrder = params.get('o');
   const [f, setF] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
@@ -39,6 +41,12 @@ export default function CheckoutForm() {
   const [voucherBusy, setVoucherBusy] = useState(false);
   const startedAt = useRef(Date.now()); // how long the form has been open: bots submit instantly
   const set = (k) => (e) => setF((cur) => ({ ...cur, [k]: e.target.value }));
+
+  // Came back from PayMongo without paying: close that order's payment page so the old link can't be used with the voucher.
+  useEffect(() => {
+    if (!cancelled || !cancelledOrder) return;
+    fetch('/api/expire-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderNo: cancelledOrder }) }).catch(() => {});
+  }, [cancelled, cancelledOrder]);
 
   // ---- Google sign-in: fill in saved details, optionally save new ones ----
   const { user, token, client, ready: authReady, available: authAvailable, signIn } = useAuth();
@@ -279,4 +287,4 @@ export default function CheckoutForm() {
       </aside>
     </form>
   );
-                 }
+                  }

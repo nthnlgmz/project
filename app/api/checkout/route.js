@@ -1,12 +1,11 @@
 // Creates the order in Supabase, then a PayMongo Checkout Session, and returns the PayMongo payment page link.
-// Everything that matters (prices, voucher, email of a signed-in customer) is decided here, never by the browser.
+// Everything that matters (prices, email of a signed-in customer) is decided here, never by the browser.
 import { createClient } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
 import { validate, sanitizeCustomer } from '../../../lib/orders';
 import { json, sameOrigin } from '../../../lib/security';
 import { parseCart, priceCart } from '../../../lib/cart-server';
-import { sweepVoucherOrders } from '../../../lib/expire-orders';
-import { CODE_RE, TOKEN_RE, MIN_CHARGE_CENTS, normalizeCode, priceLines, describeVoucher } from '../../../lib/vouchers';
+import { sweepUnpaidOrders } from '../../../lib/expire-orders';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -67,30 +66,14 @@ async function handle(request) {
   if (priced.error) return json({ ok: false, error: priced.error }, priced.status);
   const { lines, images } = priced;
 
-  // ---- first close payment pages of voucher orders that were left unpaid past the hold time (best effort) ----
-  await sweepVoucherOrders(db, pmKey);
+  // ---- first close payment pages that were left unpaid for 30 minutes (best effort) ----
+  await sweepUnpaidOrders(db, pmKey);
 
-  // ---- voucher: claimed atomically in the database, so simultaneous checkouts can never exceed the limit ----
-  let voucher = null;
-  let p = priceLines(lines, null);
-  if (body.voucher) {
-    const code = normalizeCode(body.voucher);
-    if (!CODE_RE.test(code)) return json({ ok: false, voucherError: true, error: "This code isn't valid or has expired." }, 409);
-    try { await db.rpc('expire_stale_voucher_holds'); } catch (e) { /* best effort */ }
-    const vToken = TOKEN_RE.test(String(body.voucherToken || '')) ? String(body.voucherToken) : null;
-    const { data: rows, error: rErr } = await db.rpc('redeem_voucher', { p_code: code, p_token: vToken });
-    const v = Array.isArray(rows) ? rows[0] : rows;
-    if (rErr || !v) return json({ ok: false, voucherError: true, error: 'This voucher is no longer available.' }, 409);
-    voucher = v;
-    p = priceLines(lines, v);
-    if (p.totalCents < MIN_CHARGE_CENTS) {
-      await db.rpc('release_voucher', { p_id: v.id });
-      return json({ ok: false, voucherError: true, error: "This voucher can't be used on this order." }, 409);
-    }
-  }
-  const releaseVoucher = async () => { if (voucher) await db.rpc('release_voucher', { p_id: voucher.id }); };
+  // ---- prices in centavos, from the trusted lines ----
+  const unitCents = lines.map((l) => Math.round(l.price * 100));
+  const totalCents = lines.reduce((n, l, i) => n + unitCents[i] * l.qty, 0);
 
-  const total = p.totalCents / 100;
+  const total = totalCents / 100;
   const line2 = [s.line2, s.barangay ? 'Brgy. ' + s.barangay : ''].filter(Boolean).join(', '); // unit/subdivision + barangay
   const orderNo = 'FND-' + randomBytes(3).toString('hex').toUpperCase();
   const orderRow = {
@@ -99,12 +82,10 @@ async function handle(request) {
     address_line1: s.line1, address_line2: line2 || null, city: s.city, province: s.province, postal_code: s.postal,
     notes: s.notes || null, items: lines, total,
   };
-  if (voucher) Object.assign(orderRow, { voucher_id: voucher.id, voucher_code: voucher.code, discount: p.discountCents / 100, voucher_held: true });
   let ins = await db.from('orders').insert(userId ? { ...orderRow, user_id: userId } : orderRow).select('id').single();
   if (ins.error && userId) ins = await db.from('orders').insert(orderRow).select('id').single(); // user_id column not added yet: still take the order
   const order = ins.data;
   if (ins.error || !order) {
-    await releaseVoucher();
     return json({ ok: false, error: 'Could not save your order. Please try again.' }, 500);
   }
 
@@ -123,15 +104,15 @@ async function handle(request) {
       line_items: lines.map((l, i) => {
         const src = images[l.id];
         const img = src ? (src.startsWith('/') ? site + src : src) : '';
-        return { currency: 'PHP', amount: p.unitCents[i], name: "Fundy's " + l.title, quantity: l.qty, ...(img ? { images: [img] } : {}) };
+        return { currency: 'PHP', amount: unitCents[i], name: "Fundy's " + l.title, quantity: l.qty, ...(img ? { images: [img] } : {}) };
       }),
       payment_method_types: methods,
-      description: "Fundy's order " + orderNo + (voucher ? ' (voucher ' + voucher.code + ', ' + describeVoucher(voucher) + ')' : ''),
+      description: "Fundy's order " + orderNo,
       reference_number: orderNo,
       send_email_receipt: true, show_description: true, show_line_items: true,
       metadata: { order_id: order.id, order_no: orderNo },
       success_url: site + '/order/success?o=' + orderNo,
-      cancel_url: site + '/checkout?cancelled=1&o=' + orderNo,
+      cancel_url: site + '/checkout?cancelled=1',
     } } }),
     });
     pm = await res.json().catch(() => ({}));
@@ -140,11 +121,14 @@ async function handle(request) {
   }
   const attrs = pm && pm.data && pm.data.attributes;
   if (!res || !res.ok || !attrs || !attrs.checkout_url) {
-    await db.from('orders').update({ status: 'cancelled' }).eq('id', order.id); // the database trigger gives the voucher use back
+    await db.from('orders').update({ status: 'cancelled' }).eq('id', order.id);
     console.error('PayMongo error', res ? res.status : 'no response', JSON.stringify(pm).slice(0, 500));
     return json({ ok: false, error: 'Payment page could not be created. Please try again.' }, 502);
   }
   await db.from('orders').update({ paymongo_session_id: pm.data.id }).eq('id', order.id);
+  // Keep the payment link so "My orders" can show a Pay button while it is still valid (needs supabase/orders-checkout-url.sql).
+  const linkSaved = await db.from('orders').update({ checkout_url: attrs.checkout_url }).eq('id', order.id);
+  if (linkSaved.error) console.error('Could not save checkout_url (has supabase/orders-checkout-url.sql been run?)', linkSaved.error.message);
 
   // ---- "Save my details for next time": only for a verified, signed-in customer who ticked the box ----
   if (userId && body.saveDetails === true) {

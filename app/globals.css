@@ -553,23 +553,14 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .checkout::before{content:"";position:absolute;inset:0;background:rgba(255,246,234,.9);pointer-events:none}
 .checkout>.container{position:relative}
 :is(.checkout, .legal) ~ .site-footer{background:linear-gradient(rgba(255,246,234,.9),rgba(255,246,234,.9)),var(--gingham)}
-.co-voucher{margin:0 0 1rem}
-.co-voucher label{display:block;font-weight:700;color:var(--brown);font-size:.95rem;margin-bottom:.3rem}
-.co-voucher-row{display:flex;gap:.5rem}
-.co-voucher-row input{flex:1;min-width:0;font:inherit;text-transform:uppercase;padding:.6em .9em;border:2px solid rgba(114,55,32,.45);border-radius:12px;background:#fff;color:var(--ink)}
-.co-voucher-row input:focus{outline:3px solid var(--butter);border-color:var(--red)}
-.co-voucher-row .btn{padding:.55em 1.2em;font-size:.95rem;white-space:nowrap}
 
-/* ===== Checkout fixes: no sideways overflow, location selects, voucher row ===== */
+/* ===== Checkout fixes: no sideways overflow, location selects ===== */
 .co-card{min-width:0}
 .co-field{min-width:0}
 .co-field select{font:inherit;padding:.7em .9em;border:2px solid rgba(114,55,32,.45);border-radius:12px;background:#fff;color:var(--ink);width:100%;max-width:100%;box-sizing:border-box;min-width:0;appearance:auto}
 .co-field select:focus{outline:3px solid var(--butter);border-color:var(--red)}
 .co-field select:disabled{opacity:.6}
 .co-field.has-error select{border-color:#b00020}
-.co-voucher-row{display:flex;gap:.5rem;min-width:0}
-.co-voucher-row input{flex:1 1 0;width:0;min-width:0}
-.co-voucher-row .btn{flex:0 0 auto;padding:.5em 1em}
 
 /* ===== Concentric corners: a button inside a card gets  radius = card radius - border - padding  ===== */
 .co-card{--card-r:34px;--card-bw:3px;--card-pad:1.4rem;border-radius:var(--card-r);padding:var(--card-pad)}
@@ -663,12 +654,6 @@ img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-tou
 .co-email{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;min-width:0}
 .co-field input:disabled{background:#f1e8de;color:var(--muted);cursor:not-allowed}
 
-/* ===== Voucher applied ===== */
-.co-reserved{display:block;font-size:.8rem;font-weight:400;opacity:.85}
-.co-voucher-applied{display:flex;justify-content:space-between;align-items:center;gap:.6rem;background:#e8f5ea;border:2px solid #7fbf8a;border-radius:12px;padding:.55rem .8rem;color:#17653a}
-.co-discount{display:flex;justify-content:space-between;margin:0 0 .4rem;color:#17653a;font-weight:700}
-.co-voucher-msg{color:#b00020;font-weight:600}
-.mo-discount{display:flex;justify-content:space-between;margin:0;color:#17653a;font-weight:700;font-size:.95rem}
 
 /* ===== Desktop nav: "More" dropdown ===== */
 .primary-nav .nav-more{position:relative}

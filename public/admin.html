@@ -239,7 +239,6 @@
     <nav class="tabs" role="tablist" aria-label="Admin sections">
       <button type="button" role="tab" id="t-dashboard" data-tab="dashboard" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16v-2H4v2zm1-4h3V9H5v7zm5 0h3V4h-3v12zm5 0h3v-5h-3v5z"/></svg><span class="t-label">Dashboard</span></button>
       <button type="button" role="tab" id="t-orders" data-tab="orders" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M7 7V6a5 5 0 0 1 10 0v1h3l-1 14H5L4 7h3zm2 0h6V6a3 3 0 0 0-6 0v1z"/></svg><span class="t-label">Orders</span></button>
-      <button type="button" role="tab" id="t-vouchers" data-tab="vouchers" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V7zm9-1v2h2V6h-2zm0 5v2h2v-2h-2zm0 5v2h2v-2h-2z"/></svg><span class="t-label">Vouchers</span></button>
       <button type="button" role="tab" id="t-products" data-tab="products" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M8 3h8v2H8V3zM7 6h10l1 2v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8l1-2zm1 5v6h8v-6H8z"/></svg><span class="t-label">Products</span></button>
       <button type="button" role="tab" id="t-booths" data-tab="booths" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9l2-5h14l2 5v2a3 3 0 0 1-3 1 3 3 0 0 1-3-1 3 3 0 0 1-3 1 3 3 0 0 1-3-1 3 3 0 0 1-3 1 3 3 0 0 1-3-1V9zm2 5.5V20h14v-5.5a5 5 0 0 1-1 .1 5 5 0 0 1-3-1 5 5 0 0 1-3 1 5 5 0 0 1-3-1 5 5 0 0 1-3 1 5 5 0 0 1-1-.1z"/></svg><span class="t-label"><span class="t-long">Upcoming booths</span><span class="t-short">Booths</span></span></button>
     </nav>
@@ -275,52 +274,6 @@
         <div class="dash-card"><h3>Payment methods</h3><div id="dMethods"></div></div>
       </div>
       <div class="dash-card"><h3>Order status</h3><div class="status-grid" id="dStatus"></div></div>
-    </section>
-
-    <!-- ================= VOUCHERS ================= -->
-    <section class="panel" id="tab-vouchers" role="tabpanel" aria-labelledby="t-vouchers" hidden>
-      <h2>Vouchers</h2>
-      <p class="hint">Customers type the code at checkout. The discount is worked out on the server from the real prices. Two kinds:
-        <b>Usage-limited</b> (stops after a set number of orders) and <b>Date-restricted</b> (unlimited uses, but only on one Philippine calendar day, then it expires by itself).
-        A use is <b>reserved for a customer for 10 minutes</b> the moment they apply the code, and becomes a real use when they pay. It is given back automatically if they remove the code, leave the page, let the 10 minutes run out, or the order is cancelled.</p>
-      <form id="voucherForm" novalidate>
-        <div class="grid">
-          <div>
-            <label for="vCode">Code *</label>
-            <input type="text" id="vCode" maxlength="32" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. FUNDYS2026">
-          </div>
-          <div>
-            <label for="vMode">Type *</label>
-            <select id="vMode">
-              <option value="limited">Usage-limited (max number of uses)</option>
-              <option value="date">Date-restricted (one day, unlimited uses)</option>
-            </select>
-          </div>
-          <div>
-            <label for="vType">Discount *</label>
-            <select id="vType">
-              <option value="percent">Percent off (%)</option>
-              <option value="fixed">Fixed amount off (&#8369;)</option>
-            </select>
-          </div>
-          <div>
-            <label for="vValue">Value *</label>
-            <input type="number" id="vValue" min="0.01" step="0.01" inputmode="decimal" placeholder="e.g. 10">
-          </div>
-          <div id="vLimitWrap">
-            <label for="vMax">Max uses *</label>
-            <input type="number" id="vMax" min="1" step="1" inputmode="numeric" placeholder="e.g. 5">
-          </div>
-          <div id="vDateWrap" hidden>
-            <label for="vDate">Valid on (Philippine date) *</label>
-            <input type="date" id="vDate">
-          </div>
-        </div>
-        <div class="actions"><button type="submit" class="btn">Create voucher</button></div>
-        <p class="msg" id="voucherMsg" role="status"></p>
-      </form>
-      <h3>Your vouchers</h3>
-      <ul class="ocards" id="voucherList"></ul>
     </section>
 
     <!-- ================= BOOTHS ================= -->
@@ -501,7 +454,7 @@
   var BUCKET = 'product-images';
 
   var sb = null;
-  var state = { booths: [], products: [], orders: [], vouchers: [] };
+  var state = { booths: [], products: [], orders: [] };
   var formImg = null;     // photo processed in the form, uploaded on save
   var formFile = null;
   var editingBooth = null, editingProduct = null;
@@ -600,7 +553,7 @@
       state.products = (r.data || []).map(C.productFromRow); renderProducts();
     });
   }
-  function loadAll() { return Promise.all([reloadBooths(), reloadProducts(), reloadOrders(), reloadVouchers()]).then(function () { updateBoothPreview(); refreshAutoFields(); }); }
+  function loadAll() { return Promise.all([reloadBooths(), reloadProducts(), reloadOrders()]).then(function () { updateBoothPreview(); refreshAutoFields(); }); }
 
   /* ---------------- orders ---------------- */
   function reloadOrders() {
@@ -610,7 +563,7 @@
       state.orders = r.data || []; renderOrders(); renderDashboard();
     });
   }
-  var PAY_LABELS = { gcash: 'GCash', paymaya: 'Maya', card: 'Card', grab_pay: 'GrabPay', dob: 'Online banking', dob_ubp: 'UnionBank', brankas_bdo: 'BDO', brankas_landbank: 'Landbank', brankas_metrobank: 'Metrobank', billease: 'BillEase', qrph: 'QR Ph' };
+  var PAY_LABELS = { gcash: 'GCash', paymaya: 'Maya', card: 'Card', grab_pay: 'GrabPay', qrph: 'QR Ph', dob: 'Online banking', dob_ubp: 'UnionBank', brankas_bdo: 'BDO', brankas_landbank: 'Landbank', brankas_metrobank: 'Metrobank', billease: 'BillEase', qrph: 'QR Ph' };
   function renderOrders() {
     var all = $('oShowAll').checked;
     var list = state.orders.filter(function (o) { return all || o.status === 'paid' || o.status === 'shipped'; });
@@ -622,7 +575,7 @@
       var pay = o.payment_method ? ' &middot; ' + C.esc(PAY_LABELS[o.payment_method] || o.payment_method) : '';
       return '<li class="ocard">' +
         '<div class="oc-head"><div class="oc-id"><strong>' + C.esc(o.order_no) + '</strong>' + chip + '</div><div class="oc-total">' + C.esc(C.formatPrice(o.total)) + '</div></div>' +
-        '<p class="oc-sub">' + C.esc(when) + pay + (o.voucher_code && Number(o.discount) > 0 ? ' &middot; Voucher ' + C.esc(o.voucher_code) + ' (&minus;' + C.esc(C.formatPrice(o.discount)) + ')' : '') + '</p>' +
+        '<p class="oc-sub">' + C.esc(when) + pay + '</p>' +
         '<ul class="oc-items">' + items + '</ul>' +
         '<div class="oc-cust"><b>' + C.esc(o.customer_name) + '</b>' +
           '<a href="tel:' + C.esc(o.customer_phone) + '">' + C.esc(o.customer_phone) + '</a>' +
@@ -640,11 +593,11 @@
   $('orderList').addEventListener('click', function (e) {
     var c = e.target.closest('[data-order-cancel]');
     if (c) {
-      if (!window.confirm('Cancel order ' + c.getAttribute('data-no') + '?\n\nIf the customer already paid, refund them in the PayMongo dashboard yourself. Any voucher use is given back automatically.')) return;
+      if (!window.confirm('Cancel order ' + c.getAttribute('data-no') + '?\n\nIf the customer already paid, refund them in the PayMongo dashboard yourself.')) return;
       c.disabled = true;
       sb.from('orders').update({ status: 'cancelled' }).eq('id', c.getAttribute('data-order-cancel')).then(function (r) {
         if (r.error) { setMsg('orderMsg', 'Could not cancel: ' + r.error.message, 'err'); c.disabled = false; return; }
-        reloadOrders(); reloadVouchers();
+        reloadOrders();
       });
       return;
     }
@@ -669,7 +622,7 @@
   function monthLabel(m) { return MON[+m.slice(5, 7) - 1] + ' ' + m.slice(2, 4); }
   function money(n) { return C.formatPrice(n); }
   function pct(n) { return Math.round(n) + '%'; }
-  var PAY = { gcash: 'GCash', paymaya: 'Maya', card: 'Card', grab_pay: 'GrabPay', dob: 'Online banking', dob_ubp: 'UnionBank', brankas_bdo: 'BDO', brankas_landbank: 'Landbank', brankas_metrobank: 'Metrobank', billease: 'BillEase', qrph: 'QR Ph' };
+  var PAY = { gcash: 'GCash', paymaya: 'Maya', card: 'Card', grab_pay: 'GrabPay', qrph: 'QR Ph', dob: 'Online banking', dob_ubp: 'UnionBank', brankas_bdo: 'BDO', brankas_landbank: 'Landbank', brankas_metrobank: 'Metrobank', billease: 'BillEase', qrph: 'QR Ph' };
 
   function sales() {
     return state.orders.filter(function (o) { return o.status === 'paid' || o.status === 'shipped'; }).map(function (o) {
@@ -810,10 +763,10 @@
       if (/^[=@\t\r]/.test(t) || (/^[+-]/.test(t) && !/^[+-]?[\d\s().-]+$/.test(t))) t = "'" + t;
       return '"' + t.replace(/"/g, '""') + '"';
     }
-    var head = ['Order no', 'Date (PH)', 'Status', 'Payment', 'Voucher', 'Discount', 'Customer', 'Phone', 'Email', 'Address', 'Items', 'Total'];
+    var head = ['Order no', 'Date (PH)', 'Status', 'Payment', 'Customer', 'Phone', 'Email', 'Address', 'Items', 'Total'];
     var lines = [head.map(q).join(',')].concat(list.map(function (x) {
       var o = x.o;
-      return [o.order_no, x.day, o.status, PAY[o.payment_method] || o.payment_method || '', o.voucher_code || '', Number(o.discount || 0).toFixed(2), o.customer_name, o.customer_phone, o.customer_email,
+      return [o.order_no, x.day, o.status, PAY[o.payment_method] || o.payment_method || '', o.customer_name, o.customer_phone, o.customer_email,
         [o.address_line1, o.address_line2, o.city, o.province, o.postal_code].filter(Boolean).join(', '),
         x.items.map(function (i) { return i.qty + ' x ' + i.title; }).join('; '), x.total.toFixed(2)].map(q).join(',');
     }));
@@ -824,90 +777,9 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   });
 
-  /* ---------------- vouchers ---------------- */
-  function reloadVouchers() {
-    return sb.from('vouchers').select('*').order('created_at', { ascending: false }).then(function (r) {
-      if (r.error) { setMsg('voucherMsg', 'Could not load vouchers: ' + r.error.message + ' (has supabase/vouchers.sql been run?)', 'err'); return; }
-      state.vouchers = r.data || []; renderVouchers();
-    });
-  }
-  function voucherStatus(v) {
-    var today = ymd(new Date());
-    if (!v.active) return { t: 'Disabled', c: 'grey' };
-    if (v.mode === 'limited') return Number(v.used_count) >= Number(v.max_uses) ? { t: 'Used up', c: 'grey' } : { t: 'Active', c: '' };
-    if (v.valid_on < today) return { t: 'Expired', c: 'grey' };
-    return v.valid_on === today ? { t: 'Valid today', c: 'red' } : { t: 'Scheduled', c: '' };
-  }
-  function dateLabel(iso) { var p = String(iso).slice(0, 10).split('-'); return MON[+p[1] - 1] + ' ' + (+p[2]) + ', ' + p[0]; }
-  function renderVouchers() {
-    $('voucherList').innerHTML = state.vouchers.length ? state.vouchers.map(function (v) {
-      var st = voucherStatus(v);
-      var off = v.discount_type === 'percent' ? Number(v.discount_value) + '% off' : C.formatPrice(v.discount_value) + ' off';
-      var detail = v.mode === 'limited'
-        ? 'Usage-limited &middot; ' + Number(v.used_count) + ' of ' + Number(v.max_uses) + ' used or reserved (' + Math.max(0, Number(v.max_uses) - Number(v.used_count)) + ' left)'
-        : 'Date-restricted &middot; valid ' + C.esc(dateLabel(v.valid_on)) + ' only &middot; used ' + Number(v.used_count) + ' time' + (Number(v.used_count) === 1 ? '' : 's');
-      return '<li class="ocard"><div class="oc-head"><div class="oc-id"><strong>' + C.esc(v.code) + '</strong><span class="chip ' + st.c + '">' + st.t + '</span></div>' +
-        '<div class="oc-total">' + C.esc(off) + '</div></div><p class="oc-sub">' + detail + '</p>' +
-        '<div class="oc-foot" style="display:flex;gap:.5rem;flex-wrap:wrap"><button type="button" class="btn small ghost" data-v-toggle="' + C.esc(v.id) + '">' + (v.active ? 'Disable' : 'Enable') + '</button>' +
-        '<button type="button" class="btn small ghost" data-v-delete="' + C.esc(v.id) + '" data-code="' + C.esc(v.code) + '">Delete</button></div></li>';
-    }).join('') : '<li class="hint">No vouchers yet. Create one above.</li>';
-  }
-  function syncVoucherMode() {
-    var d = $('vMode').value === 'date';
-    $('vDateWrap').hidden = !d; $('vLimitWrap').hidden = d;
-  }
-  $('vMode').addEventListener('change', syncVoucherMode);
-  $('vType').addEventListener('change', function () { $('vValue').placeholder = $('vType').value === 'percent' ? 'e.g. 10' : 'e.g. 50'; });
-  $('vCode').addEventListener('input', function () { $('vCode').value = $('vCode').value.toUpperCase().replace(/[^A-Z0-9_-]/g, ''); });
-  $('voucherForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    function bad(t) { setMsg('voucherMsg', t, 'err'); }
-    var code = $('vCode').value.trim().toUpperCase();
-    var mode = $('vMode').value, type = $('vType').value, val = parseFloat($('vValue').value);
-    if (!/^[A-Z0-9_-]{3,32}$/.test(code)) return bad('The code needs 3 to 32 letters, numbers, dashes or underscores.');
-    if (!(val > 0)) return bad('Enter the discount value.');
-    if (type === 'percent' && val > 100) return bad('A percent discount cannot be more than 100.');
-    var row = { code: code, mode: mode, discount_type: type, discount_value: val, active: true, max_uses: null, valid_on: null };
-    if (mode === 'limited') {
-      var max = parseInt($('vMax').value, 10);
-      if (!(max >= 1)) return bad('Enter how many times the code can be used.');
-      row.max_uses = max;
-    } else {
-      var d = $('vDate').value;
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return bad('Pick the date the code is valid on.');
-      if (d < ymd(new Date())) return bad('That date has already passed.');
-      row.valid_on = d;
-    }
-    setMsg('voucherMsg', 'Saving…');
-    sb.from('vouchers').insert(row).then(function (r) {
-      if (r.error) { return bad(r.error.code === '23505' ? 'That code already exists. Pick another one.' : 'Could not save: ' + r.error.message); }
-      $('voucherForm').reset(); syncVoucherMode();
-      setMsg('voucherMsg', 'Voucher ' + code + ' created.', 'ok');
-      reloadVouchers();
-    });
-  });
-  $('voucherList').addEventListener('click', function (e) {
-    var t = e.target.closest('[data-v-toggle]'), d = e.target.closest('[data-v-delete]');
-    if (t) {
-      var v = state.vouchers.filter(function (x) { return x.id === t.getAttribute('data-v-toggle'); })[0]; if (!v) return;
-      t.disabled = true;
-      sb.from('vouchers').update({ active: !v.active }).eq('id', v.id).then(function (r) {
-        if (r.error) { fail('voucherMsg', r.error); t.disabled = false; return; }
-        reloadVouchers();
-      });
-    }
-    if (d) {
-      if (!window.confirm('Delete voucher ' + d.getAttribute('data-code') + '? Past orders keep their discount record.')) return;
-      sb.from('vouchers').delete().eq('id', d.getAttribute('data-v-delete')).then(function (r) {
-        if (r.error) return fail('voucherMsg', r.error);
-        reloadVouchers();
-      });
-    }
-  });
-
   /* ---------------- tabs ---------------- */
   function showTab(name) {
-    ['dashboard', 'orders', 'vouchers', 'products', 'booths'].forEach(function (t) {
+    ['dashboard', 'orders', 'products', 'booths'].forEach(function (t) {
       $('tab-' + t).hidden = t !== name;
       $('t-' + t).setAttribute('aria-selected', t === name ? 'true' : 'false');
     });

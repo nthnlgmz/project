@@ -5,7 +5,6 @@ import { randomBytes } from 'crypto';
 import { validate, sanitizeCustomer } from '../../../lib/orders';
 import { json, sameOrigin } from '../../../lib/security';
 import { parseCart, priceCart } from '../../../lib/cart-server';
-import { sweepUnpaidOrders } from '../../../lib/expire-orders';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -65,9 +64,6 @@ async function handle(request) {
   const priced = await priceCart(db, parseCart(body.items));
   if (priced.error) return json({ ok: false, error: priced.error }, priced.status);
   const { lines, images } = priced;
-
-  // ---- first close payment pages that were left unpaid for 30 minutes (best effort) ----
-  await sweepUnpaidOrders(db, pmKey);
 
   // ---- prices in centavos, from the trusted lines ----
   const unitCents = lines.map((l) => Math.round(l.price * 100));

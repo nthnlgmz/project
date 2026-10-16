@@ -5,6 +5,7 @@ import { randomBytes } from 'crypto';
 import { validate, sanitizeCustomer } from '../../../lib/orders';
 import { json, sameOrigin } from '../../../lib/security';
 import { parseCart, priceCart } from '../../../lib/cart-server';
+import { sweepVoucherOrders } from '../../../lib/expire-orders';
 import { CODE_RE, TOKEN_RE, MIN_CHARGE_CENTS, normalizeCode, priceLines, describeVoucher } from '../../../lib/vouchers';
 
 export const dynamic = 'force-dynamic';
@@ -65,6 +66,9 @@ async function handle(request) {
   const priced = await priceCart(db, parseCart(body.items));
   if (priced.error) return json({ ok: false, error: priced.error }, priced.status);
   const { lines, images } = priced;
+
+  // ---- first close payment pages of voucher orders that were left unpaid past the hold time (best effort) ----
+  await sweepVoucherOrders(db, pmKey);
 
   // ---- voucher: claimed atomically in the database, so simultaneous checkouts can never exceed the limit ----
   let voucher = null;
@@ -127,7 +131,7 @@ async function handle(request) {
       send_email_receipt: true, show_description: true, show_line_items: true,
       metadata: { order_id: order.id, order_no: orderNo },
       success_url: site + '/order/success?o=' + orderNo,
-      cancel_url: site + '/checkout?cancelled=1',
+      cancel_url: site + '/checkout?cancelled=1&o=' + orderNo,
     } } }),
     });
     pm = await res.json().catch(() => ({}));

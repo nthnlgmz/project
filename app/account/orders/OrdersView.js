@@ -11,6 +11,7 @@ const STATUS = {
   pending: { label: 'Awaiting payment', cls: 'pending' },
 };
 
+const PAY_WINDOW_MS = 30 * 60 * 1000; // a payment link lives 30 minutes (keep in step with lib/expire-orders.js)
 const when = (iso) => new Date(iso).toLocaleDateString('en-PH', { timeZone: 'Asia/Manila', year: 'numeric', month: 'short', day: 'numeric' });
 
 export default function OrdersView() {
@@ -28,8 +29,8 @@ export default function OrdersView() {
     let alive = true;
     const base = 'id,order_no,status,total,items,created_at,payment_method,customer_name,customer_phone,address_line1,address_line2,city,province,postal_code';
     const load = (cols) => client.from('orders').select(cols).order('created_at', { ascending: false }).limit(50);
-    load(base + ',voucher_code,discount')
-      .then((r) => (r.error ? load(base) : r)) // voucher columns not added yet: still show the orders
+    load(base + ',checkout_url')
+      .then((r) => (r.error ? load(base) : r)) // checkout_url column not added yet: still show the orders
       .then(({ data, error: err }) => {
         if (!alive) return;
         if (err) { setError('We could not load your orders right now. Please try again later.'); setOrders([]); return; }
@@ -103,14 +104,16 @@ export default function OrdersView() {
                     <li key={idx}><span>{i.title} <em>&times; {i.qty}</em></span><span>{peso(Number(i.price) * Number(i.qty))}</span></li>
                   ))}
                 </ul>
-                {o.voucher_code && Number(o.discount) > 0 ? (
-                  <p className="mo-discount"><span>Voucher {o.voucher_code}</span><strong>&minus;{peso(o.discount)}</strong></p>
-                ) : null}
                 <p className="mo-total"><span>Total{o.payment_method ? ' · ' + (PAY[o.payment_method] || o.payment_method) : ''}</span><strong>{peso(o.total)}</strong></p>
                 <p className="mo-addr"><b>{o.customer_name}</b> · {o.customer_phone}<br />{addr}</p>
-                <button type="button" className="btn btn-ghost" disabled={busyId === o.id} onClick={() => orderAgain(o)}>
-                  {busyId === o.id ? 'Adding…' : 'Order again'}
-                </button>
+                <div style={{ display: 'flex', gap: '.6rem', flexWrap: 'wrap' }}>
+                  {o.status === 'pending' && o.checkout_url && Date.now() - new Date(o.created_at).getTime() < PAY_WINDOW_MS ? (
+                    <a className="btn" style={{ flex: 1, textAlign: 'center' }} href={o.checkout_url}>Pay</a>
+                  ) : null}
+                  <button type="button" className="btn btn-ghost" style={{ flex: 1 }} disabled={busyId === o.id} onClick={() => orderAgain(o)}>
+                    {busyId === o.id ? 'Adding…' : 'Order again'}
+                  </button>
+                </div>
               </li>
             );
           })}

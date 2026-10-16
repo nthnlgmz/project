@@ -11,7 +11,6 @@ const STATUS = {
   pending: { label: 'Awaiting payment', cls: 'pending' },
 };
 
-const PAY_WINDOW_MS = 30 * 60 * 1000; // a payment link lives 30 minutes (keep in step with lib/expire-orders.js)
 const when = (iso) => new Date(iso).toLocaleDateString('en-PH', { timeZone: 'Asia/Manila', year: 'numeric', month: 'short', day: 'numeric' });
 
 export default function OrdersView() {
@@ -107,7 +106,7 @@ export default function OrdersView() {
                 <p className="mo-total"><span>Total{o.payment_method ? ' · ' + (PAY[o.payment_method] || o.payment_method) : ''}</span><strong>{peso(o.total)}</strong></p>
                 <p className="mo-addr"><b>{o.customer_name}</b> · {o.customer_phone}<br />{addr}</p>
                 <div style={{ display: 'flex', gap: '.6rem', flexWrap: 'wrap' }}>
-                  {o.status === 'pending' && o.checkout_url && Date.now() - new Date(o.created_at).getTime() < PAY_WINDOW_MS ? (
+                  {o.status === 'pending' && o.checkout_url ? (
                     <a className="btn" style={{ flex: 1, textAlign: 'center' }} href={o.checkout_url}>Pay</a>
                   ) : null}
                   <button type="button" className="btn btn-ghost" style={{ flex: 1 }} disabled={busyId === o.id} onClick={() => orderAgain(o)}>
@@ -121,4 +120,4 @@ export default function OrdersView() {
       )}
     </div>
   );
-        }
+}

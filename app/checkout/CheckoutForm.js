@@ -6,47 +6,18 @@ import { useAuth, displayName } from '../../components/AuthProvider';
 import { validate } from '../../lib/orders';
 import LocationFields from './LocationFields';
 
-// A random id this browser keeps, so the server can recognise its own voucher reservation (it is not a login).
-let memoryToken = '';
-function voucherToken() {
-  const ok = (t) => typeof t === 'string' && /^[A-Za-z0-9-]{16,64}$/.test(t);
-  try {
-    let t = window.localStorage.getItem('fundys-voucher-token');
-    if (!ok(t)) {
-      t = window.crypto && window.crypto.randomUUID ? window.crypto.randomUUID() : Array.from(window.crypto.getRandomValues(new Uint8Array(16))).map((b) => b.toString(16).padStart(2, '0')).join('');
-      window.localStorage.setItem('fundys-voucher-token', t);
-    }
-    return t;
-  } catch (e) {
-    if (!memoryToken) memoryToken = Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2) + Date.now().toString(16);
-    return memoryToken;
-  }
-}
-
 const EMPTY = { name: '', email: '', phone: '', line1: '', line2: '', barangay: '', city: '', province: '', postal: '', notes: '' };
 
 export default function CheckoutForm() {
   const { items, total, ready, setQty } = useCart();
-  const params = useSearchParams();
-  const cancelled = params.get('cancelled');
-  const cancelledOrder = params.get('o');
+  const cancelled = useSearchParams().get('cancelled');
   const [f, setF] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
   const [geo, setGeo] = useState({ mode: 'loading', barangays: 0 }); // how the location fields are currently shown
-  const [voucher, setVoucher] = useState('');
-  const [voucherMsg, setVoucherMsg] = useState('');
-  const [applied, setApplied] = useState(null); // { code, label, discount, total } once the server has accepted a voucher
-  const [voucherBusy, setVoucherBusy] = useState(false);
   const startedAt = useRef(Date.now()); // how long the form has been open: bots submit instantly
   const set = (k) => (e) => setF((cur) => ({ ...cur, [k]: e.target.value }));
-
-  // Came back from PayMongo without paying: close that order's payment page so the old link can't be used with the voucher.
-  useEffect(() => {
-    if (!cancelled || !cancelledOrder) return;
-    fetch('/api/expire-order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderNo: cancelledOrder }) }).catch(() => {});
-  }, [cancelled, cancelledOrder]);
 
   // ---- Google sign-in: fill in saved details, optionally save new ones ----
   const { user, token, client, ready: authReady, available: authAvailable, signIn } = useAuth();
@@ -94,45 +65,6 @@ export default function CheckoutForm() {
     setProfile(null); setSaveMe(false);
   }
 
-  // Voucher: the server works out the discount from the real prices; the browser only displays it.
-  async function checkVoucher(code) {
-    setVoucherBusy(true);
-    try {
-      const res = await fetch('/api/voucher', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, token: voucherToken(), items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
-      });
-      const j = await res.json().catch(() => ({}));
-      if (j.ok) { setApplied({ code: j.code, label: j.label, discount: j.discount, total: j.total, reservedMinutes: j.reservedMinutes || 0 }); setVoucherMsg(''); }
-      else { setApplied(null); setVoucherMsg(j.error || "This code isn't valid or has expired."); }
-    } catch { setVoucherMsg('Network problem. Please try again.'); }
-    setVoucherBusy(false);
-  }
-  function applyVoucher() {
-    const code = voucher.trim();
-    if (!code) { setVoucherMsg('Enter a voucher code.'); return; }
-    setVoucherMsg('');
-    checkVoucher(code);
-  }
-  function removeVoucher() {
-    setApplied(null); setVoucher(''); setVoucherMsg('');
-    fetch('/api/voucher', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'release', token: voucherToken() }) }).catch(() => {}); // give the reservation back
-  }
-  // leaving or reloading the page gives a reserved voucher use back straight away (if paying, the reservation is already the order's)
-  const appliedRef = useRef(null);
-  useEffect(() => { appliedRef.current = applied; }, [applied]);
-  useEffect(() => {
-    const onHide = () => {
-      if (appliedRef.current && navigator.sendBeacon) {
-        navigator.sendBeacon('/api/voucher', new Blob([JSON.stringify({ action: 'release', token: voucherToken() })], { type: 'application/json' }));
-      }
-    };
-    window.addEventListener('pagehide', onHide);
-    return () => window.removeEventListener('pagehide', onHide);
-  }, []);
-  // the discount depends on the cart, so check the voucher again whenever the cart total changes
-  useEffect(() => { if (applied && items.length) checkVoucher(applied.code); }, [total]); // eslint-disable-line react-hooks/exhaustive-deps
-
   // a signed-in customer's receipt email is always their account email
   useEffect(() => { if (user && user.email) setF((cur) => (cur.email === user.email ? cur : { ...cur, email: user.email })); }, [user]);
 
@@ -161,12 +93,11 @@ export default function CheckoutForm() {
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
-        body: JSON.stringify({ customer: f, voucher: applied ? applied.code : '', voucherToken: applied ? voucherToken() : '', elapsedMs: Date.now() - startedAt.current, saveDetails: !!(token && saveMe), codes: { region: geoCodes.region, province: geoCodes.province, city: geoCodes.city, barangay: geoCodes.barangay }, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
+        body: JSON.stringify({ customer: f, elapsedMs: Date.now() - startedAt.current, saveDetails: !!(token && saveMe), codes: { region: geoCodes.region, province: geoCodes.province, city: geoCodes.city, barangay: geoCodes.barangay }, company: e.target.company.value, items: items.map((i) => ({ id: i.id, qty: i.qty })) }),
       });
       const j = await res.json().catch(() => ({}));
       if (j.ok && j.checkoutUrl) { window.location.href = j.checkoutUrl; return; }
       if (j.errors) { setErrors(j.errors); focusFirstError(j.errors); }
-      else if (j.voucherError) { setApplied(null); setVoucherMsg(j.error || 'This voucher is no longer available.'); }
       else setMsg(j.error || (res.ok ? 'Something went wrong. Please try again.' : 'Server error (' + res.status + '). Please try again.'));
     } catch { setMsg('Network problem. Please check your connection and try again.'); }
     setBusy(false);
@@ -260,31 +191,12 @@ export default function CheckoutForm() {
             </li>
           ))}
         </ul>
-        {applied ? (
-          <div className="co-voucher co-voucher-applied">
-            <span><b>{applied.code}</b> applied · {applied.label}{applied.reservedMinutes ? <small className="co-reserved">Reserved for you for {applied.reservedMinutes} minutes</small> : null}</span>
-            <button type="button" className="co-link" onClick={removeVoucher}>Remove</button>
-          </div>
-        ) : (
-          <div className="co-voucher">
-            <label htmlFor="f-voucher">Voucher code</label>
-            <div className="co-voucher-row">
-              <input
-                id="f-voucher" value={voucher} maxLength={40} autoComplete="off" autoCapitalize="characters" spellCheck="false" placeholder="Enter code"
-                onChange={(e) => { setVoucher(e.target.value); setVoucherMsg(''); }}
-                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); applyVoucher(); } }}
-              />
-              <button type="button" className="btn btn-ghost" onClick={applyVoucher} disabled={voucherBusy}>{voucherBusy ? '…' : 'Apply'}</button>
-            </div>
-            {voucherMsg ? <p className="co-note co-voucher-msg" role="status">{voucherMsg}</p> : null}
-          </div>
-        )}
-        {applied ? <p className="co-discount"><span>Discount</span><strong>&minus;{peso(applied.discount)}</strong></p> : null}
-        <p className="cart-total"><span>Total</span><strong>{peso(applied ? applied.total : total)}</strong></p>
+        <p className="cart-total"><span>Total</span><strong>{peso(total)}</strong></p>
         <p className="co-note">Delivery is arranged by Fundy's after your payment. You'll pay on PayMongo's secure page with GCash, Maya, QR Ph or card.</p>
         {msg ? <p className="co-msg" role="alert">{msg}</p> : null}
-        <button type="submit" className="btn co-pay" disabled={busy}>{busy ? 'Opening payment page…' : 'Pay ' + peso(applied ? applied.total : total)}</button>
+        <button type="submit" className="btn co-pay" disabled={busy}>{busy ? 'Opening payment page…' : 'Pay ' + peso(total)}</button>
       </aside>
     </form>
   );
-                  }
+                 }
+            

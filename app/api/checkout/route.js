@@ -106,7 +106,7 @@ async function handle(request) {
 
   // ---- PayMongo payment page ----
   const site = (process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin).replace(/\/$/, '');
-  const methods = (process.env.PAYMONGO_METHODS || 'gcash,paymaya,card,grab_pay').split(',').map((m) => m.trim()).filter(Boolean);
+  const methods = (process.env.PAYMONGO_METHODS || 'gcash,paymaya,card,grab_pay,qrph').split(',').map((m) => m.trim()).filter(Boolean);
   let res = null;
   let pm = {};
   try {

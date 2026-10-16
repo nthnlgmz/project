@@ -273,10 +273,10 @@ export default function CheckoutForm() {
         )}
         {applied ? <p className="co-discount"><span>Discount</span><strong>&minus;{peso(applied.discount)}</strong></p> : null}
         <p className="cart-total"><span>Total</span><strong>{peso(applied ? applied.total : total)}</strong></p>
-        <p className="co-note">Delivery is arranged by Fundy's after your payment. You'll pay on PayMongo's secure page with GCash, Maya or card.</p>
+        <p className="co-note">Delivery is arranged by Fundy's after your payment. You'll pay on PayMongo's secure page with GCash, Maya, QR Ph or card.</p>
         {msg ? <p className="co-msg" role="alert">{msg}</p> : null}
         <button type="submit" className="btn co-pay" disabled={busy}>{busy ? 'Opening payment page…' : 'Pay ' + peso(applied ? applied.total : total)}</button>
       </aside>
     </form>
   );
-}
+                 }

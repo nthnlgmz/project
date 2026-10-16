@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../components/AuthProvider';
 import { useCart, peso } from '../../../components/CartProvider';
 
-const PAY = { gcash: 'GCash', paymaya: 'Maya', card: 'Card', grab_pay: 'GrabPay' };
+const PAY = { gcash: 'GCash', paymaya: 'Maya', card: 'Card', grab_pay: 'GrabPay', qrph: 'QR Ph' };
 const STATUS = {
   paid: { label: 'Paid, preparing your order', cls: 'paid' },
   shipped: { label: 'Shipped', cls: 'shipped' },
@@ -118,4 +118,4 @@ export default function OrdersView() {
       )}
     </div>
   );
-}
+        }

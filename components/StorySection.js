@@ -35,12 +35,13 @@ export default function StorySection() {
             aria-hidden="true"
             style={{
               position: 'absolute',
-              top: '6%',
-              left: 0,
-              right: 0,
+              // centred across the girl's head (~68%), lifted to ~24% down the photo (was 38%)
+              top: 'calc(24% - 0.5em)',
+              left: '68%',
+              transform: 'translateX(-50%)',
               textAlign: 'center',
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(3.4rem, 17vw, 9rem)',
+              fontSize: 'clamp(2.6rem, 12.5vw, 7rem)', // smaller so it fits when shifted right
               lineHeight: 1,
               letterSpacing: '.04em',
               whiteSpace: 'nowrap',

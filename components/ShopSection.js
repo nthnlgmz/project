@@ -6,10 +6,9 @@ export default function ShopSection() {
           <div>
             <p className="eyebrow">Where to Buy</p>
             <h2 id="shop-title">Order Fundy's Online</h2>
-            <p>Our full range is available on Shopee and TikTok Shop. We also pop up at bazaars and markets, where you can taste before you buy. <a href="#booths">See where we'll be next</a>.</p>
+            <p>Order straight from this site and pay securely with GCash, Maya or card. We also pop up at bazaars and markets, where you can taste before you buy. <a href="#booths">See where we'll be next</a>.</p>
             <ul className="social-buttons">
-              <li><a className="btn btn-social btn-shopee" href="https://ph.shp.ee/pDAPXb2F" target="_blank" rel="noopener" aria-label="Shop on Shopee"><svg className="icon" aria-hidden="true"><use href="#i-shopee"/></svg><span className="btn-label">Shop on Shopee</span></a></li>
-              <li><a className="btn btn-social btn-tiktok" href="https://vt.tiktok.com/ZS9DhRoY41tqs-isnu7/" target="_blank" rel="noopener" aria-label="Shop on TikTok"><svg className="icon" aria-hidden="true"><use href="#i-tiktok"/></svg><span className="btn-label">Shop on TikTok</span></a></li>
+              <li><a className="btn" href="#products">Order now</a></li>
               <li><a className="btn btn-social btn-facebook" href="https://www.facebook.com/share/1P3eAZ63ca/" target="_blank" rel="noopener me" aria-label="Follow on Facebook"><svg className="icon" aria-hidden="true"><use href="#i-facebook"/></svg><span className="btn-label">Follow on Facebook</span></a></li>
             </ul>
           </div>

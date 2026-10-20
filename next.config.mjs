@@ -4,6 +4,7 @@ const securityHeaders = [
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },                             // other sites cannot put this site in a frame (clickjacking)
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=()' },
+  { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive, noimageindex' },  // client has unpublished the site: keep it out of search (remove to go live)
   { key: 'Strict-Transport-Security', value: 'max-age=63072000' },             // always use https once visited
 ];
 
